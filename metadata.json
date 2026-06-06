@@ -1,0 +1,6 @@
+{
+  "name": "Gen-Z Business Agency",
+  "description": "Premium full-service growth agency helping startups, creators, and brands scale with branding, marketing, acquisition, recruitment, and strategy solutions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
