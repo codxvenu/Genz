@@ -1,20 +1,18 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState } from 'react';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import ServicesGrid from './components/ServicesGrid';
-import ComparisonMatrix from './components/ComparisonMatrix';
-import GrowthDiagram from './components/GrowthDiagram';
-import StepTimeline from './components/StepTimeline';
-import Testimonials from './components/Testimonials';
+import Scene1Hero from './components/Scene1Hero';
+import Scene2ScrollStoryIntro from './components/Scene2ScrollStoryIntro';
+import Scene3BusinessJourney from './components/Scene3BusinessJourney';
+import Scene4GbaeEnters from './components/Scene4GbaeEnters';
+import Scene5StickyStorytelling from './components/Scene5StickyStorytelling';
+import Scene6Transformation from './components/Scene6Transformation';
+import Scene7Impact from './components/Scene7Impact';
+import Scene8GenZAdvantage from './components/Scene8GenZAdvantage';
+import Scene9CoreMessage from './components/Scene9CoreMessage';
+import Scene10FinalCta from './components/Scene10FinalCta';
 import Calculator from './components/Calculator';
 import BookingModal from './components/BookingModal';
 import Footer from './components/Footer';
-import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function App() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -22,8 +20,9 @@ export default function App() {
   const openBooking = () => setIsBookingOpen(true);
   const closeBooking = () => setIsBookingOpen(false);
 
-  const scrollIntoServices = () => {
-    const element = document.getElementById('services-section');
+  // Smooth scroll helper
+  const scrollIntoSection = (id: string) => {
+    const element = document.getElementById(id);
     if (element) {
       const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
@@ -39,83 +38,63 @@ export default function App() {
   };
 
   return (
-    <div id="genz-agency-app" className="min-h-screen bg-black text-white font-sans antialiased selection:bg-white selection:text-black">
+    <div 
+      id="genz-business-agency-app" 
+      className="min-h-screen bg-white text-zinc-900 font-sans antialiased selection:bg-violet-600 selection:text-white relative"
+    >
       
-      {/* Background radial soft ambient lights */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
-        <div id="glow-beam-1" className="absolute top-[10%] left-[-15%] w-[800px] h-[800px] bg-zinc-900/10 rounded-full blur-[180px]" />
-        <div id="glow-beam-2" className="absolute bottom-[20%] right-[-15%] w-[800px] h-[800px] bg-zinc-900/10 rounded-full blur-[180px]" />
+      {/* Absolute ambient lights background */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+        <div className="absolute top-[5%] left-[-15%] w-[800px] h-[800px] bg-violet-100/40 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[10%] right-[-15%] w-[800px] h-[800px] bg-purple-100/30 rounded-full blur-[140px]" />
       </div>
 
-      <div className="relative z-10">
-        {/* Navigation Bar Header */}
+      <div className="relative z-10 flex flex-col">
+        {/* Navigation Bar */}
         <Navbar onOpenBooking={openBooking} />
 
-        {/* Hero Section with Interactive Worktop Scale Selector */}
-        <Hero onOpenBooking={openBooking} onExploreServices={scrollIntoServices} />
+        {/* SCENE 1 — HERO */}
+        <Scene1Hero 
+          onOpenBooking={openBooking} 
+          onStartJourney={() => scrollIntoSection('scene-scroll-story')} 
+        />
 
-        {/* Why Choose Us / Comparative Matrix */}
-        <ComparisonMatrix />
+        {/* SCENE 2 — SCROLL STORY INTRO */}
+        <Scene2ScrollStoryIntro />
 
-        {/* 6 Capabilities Services Section Grid */}
-        <ServicesGrid onOpenBooking={openBooking} />
+        {/* SCENE 3 — THE BUSINESS JOURNEY */}
+        <Scene3BusinessJourney />
 
-        {/* Startup Growth Diagram */}
-        <GrowthDiagram />
+        {/* SCENE 4 — GBA ENTERS */}
+        <Scene4GbaeEnters />
 
-        {/* Process Milestone Chronology timeline */}
-         <StepTimeline />
+        {/* SCENE 5 — STICKY STORYTELLING EXPERIENCE */}
+        <Scene5StickyStorytelling />
 
-        {/* Performance Goal Modeler Calculator */}
-        <Calculator onOpenBooking={openBooking} />
+        {/* SCENE 6 — TRANSFORMATION */}
+        <Scene6Transformation />
 
-        {/* Client reviews testimonials deck */}
-        <Testimonials />
+        {/* SCENE 7 — IMPACT SECTION */}
+        <Scene7Impact />
 
-        {/* High Conversion Final Banner CTA */}
-        <section id="final-cta-section" className="py-24 sm:py-32 bg-black border-t border-zinc-905 overflow-hidden text-white relative">
-          {/* Subtle light accent */}
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-800 to-transparent pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-zinc-900/10 rounded-full blur-[120px] pointer-events-none" />
+        {/* SCENE 8 — THE GEN-Z ADVANTAGE */}
+        <Scene8GenZAdvantage />
 
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
-            <div className="inline-flex items-center space-x-2 bg-zinc-900/50 border border-zinc-850 px-3 py-1.5 rounded-full">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="font-mono text-[9px] tracking-widest text-zinc-400 uppercase font-medium">LAUNCH WORKBENCH</span>
-            </div>
+        {/* SCENE 9 — THE CORE MESSAGE */}
+        <Scene9CoreMessage />
 
-            <div className="space-y-4">
-              <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white font-light tracking-wide leading-tight">
-                Ready To Build <br />
-                <span className="italic font-light text-zinc-400">Something Bigger?</span>
-              </h2>
-              <p className="text-sm sm:text-base text-zinc-450 font-light max-w-xl mx-auto leading-relaxed">
-                From branding and staffing to customer acquisition and growth strategy, we help businesses scale with absolute confidence.
-              </p>
-            </div>
+        {/* INTERSTITIAL - Scale velocity planning calculator */}
+        <div id="calculator-section-divider">
+          <Calculator onOpenBooking={openBooking} />
+        </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-              <button
-                onClick={openBooking}
-                className="w-full sm:w-auto px-8 py-4 bg-white text-black hover:bg-zinc-200 text-xs font-mono rounded-full font-bold tracking-widest uppercase transition-colors shadow-md cursor-pointer"
-              >
-                Schedule Consultation
-              </button>
-              <button
-                onClick={openBooking}
-                className="w-full sm:w-auto px-8 py-4 glass text-zinc-300 hover:text-white text-xs font-mono rounded-full font-bold tracking-widest uppercase transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
-              >
-                <span>Start Growing Today</span>
-                <ArrowRight className="w-3.5 h-3.5 text-zinc-400" />
-              </button>
-            </div>
-          </div>
-        </section>
+        {/* SCENE 10 — FINAL CTA */}
+        <Scene10FinalCta onOpenBooking={openBooking} />
 
-        {/* Global Footer */}
+        {/* GLOBAL FOOTER */}
         <Footer onOpenBooking={openBooking} />
 
-        {/* Reservation scheduling mult-step lead dialogue */}
+        {/* BOOKING FLOW MODAL */}
         <BookingModal isOpen={isBookingOpen} onClose={closeBooking} />
       </div>
 

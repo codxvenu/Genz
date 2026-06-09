@@ -1,209 +1,158 @@
-import { useState } from 'react';
-import { 
-  Sparkles, 
-  Megaphone, 
-  Users, 
-  Briefcase, 
-  Target, 
-  TrendingUp, 
-  Check, 
-  ArrowRight,
-  HelpCircle
-} from 'lucide-react';
-import { SERVICES } from '../data';
-import { Service } from '../types';
+import { motion } from 'motion/react';
+import { Palette, Megaphone, Users, Target, Briefcase, Check, ArrowUpRight } from 'lucide-react';
 
 interface ServicesGridProps {
   onOpenBooking: () => void;
 }
 
 export default function ServicesGrid({ onOpenBooking }: ServicesGridProps) {
-  const [selectedServiceId, setSelectedServiceId] = useState<string>('branding');
-
-  // Map icon strings to Lucide icon components
-  const renderIcon = (name: string, className: string) => {
-    switch (name) {
-      case 'Sparkles':
-        return <Sparkles className={className} />;
-      case 'Megaphone':
-        return <Megaphone className={className} />;
-      case 'Users':
-        return <Users className={className} />;
-      case 'Briefcase':
-        return <Briefcase className={className} />;
-      case 'Target':
-        return <Target className={className} />;
-      case 'TrendingUp':
-        return <TrendingUp className={className} />;
-      default:
-        return <HelpCircle className={className} />;
+  const bentoServices = [
+    {
+      id: 'branding',
+      title: 'Branding',
+      desc: 'We construct timeless brand universes, positioning, and storytelling that command industry authority.',
+      icon: Palette,
+      items: ['Brand Identity', 'Logo Systems', 'Packaging Systems', 'Visual Direction'],
+      size: 'md:col-span-6',
+      accent: 'linear-gradient(135deg, #FBF8FF 0%, #F5ECFF 100%)'
+    },
+    {
+      id: 'marketing',
+      title: 'Marketing',
+      desc: 'High-frequency outreach programs designed to capture modern buyer behavior across all digital pipelines.',
+      icon: Megaphone,
+      items: ['Social Media Engineering', 'Strategic Ad Campaigns', 'Performance Marketing', 'Local & Regional Marketing'],
+      size: 'md:col-span-6',
+      accent: 'linear-gradient(135deg, #FAFAFF 0%, #EEF2FF 100%)'
+    },
+    {
+      id: 'staffing',
+      title: 'Staffing',
+      desc: 'We solve the hardest scaling bottleneck: quickly qualifying and embedding elite global operators into your workflow.',
+      icon: Users,
+      items: ['Candidate Recruitment', 'Talent Acquisition', 'Operator Shortlisting', 'HR Alignment & Support'],
+      size: 'md:col-span-4',
+      accent: 'linear-gradient(135deg, #FDF8FF 0%, #F5F0FF 100%)'
+    },
+    {
+      id: 'acquisition',
+      title: 'Customer Acquisition',
+      desc: 'We build self-reinforcing pipelines, outbound target machines, and customer retention loops.',
+      icon: Target,
+      items: ['Qualified Lead Generation', 'Audience Flow Research', 'Customer Retention Loops', 'Automated Growth Funnels'],
+      size: 'md:col-span-4',
+      accent: 'linear-gradient(135deg, #FAFDFD 0%, #EDFDFB 100%)'
+    },
+    {
+      id: 'consulting',
+      title: 'Business Consulting',
+      desc: 'Our strategic wing maps roadmaps, analyzes market shifts, and streamlines systems for long-term scale.',
+      icon: Briefcase,
+      items: ['Business Strategy', 'Growth Milestone Planning', 'In-depth Market Analysis', 'System Scale Architecture'],
+      size: 'md:col-span-4',
+      accent: 'linear-gradient(135deg, #FCF9FF 0%, #F2F0FF 100%)'
     }
-  };
-
-  const selectedService = SERVICES.find(s => s.id === selectedServiceId) || SERVICES[0];
+  ];
 
   return (
     <section 
       id="services-section" 
-      className="py-20 sm:py-28 bg-black/95 border-t border-zinc-900 text-white"
+      className="py-24 sm:py-32 bg-white relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top micro light elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[10%] w-[380px] h-[380px] bg-purple-100/30 rounded-full blur-[80px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header summary text */}
-        <div className="space-y-4 mb-14 md:mb-20 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center space-x-2">
-            <span className="w-1 h-3 bg-zinc-500 rounded-full" />
-            <span className="font-mono text-[10px] tracking-widest text-zinc-400 uppercase">Modular Scale Divisions</span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-white tracking-wide">
-            One Unified Partner, <br />
-            <span className="italic font-light text-zinc-400">Unlimited Execution Power</span>
+        {/* Upper Badge */}
+        <div className="flex justify-center mb-6">
+          <span className="font-mono text-[9px] tracking-widest text-violet-750 uppercase font-extrabold border border-violet-100 bg-violet-50 px-3.5 py-1.5 rounded-full shadow-soft">
+            UNIFIED CAPABILITIES
+          </span>
+        </div>
+
+        {/* Heading Section */}
+        <div className="space-y-4 mb-20 text-center max-w-2xl mx-auto">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-zinc-900 font-extrabold tracking-tight leading-tight">
+            Our Multi-Departmental <br />
+            <span className="text-gradient-purple">Growth Service Engines.</span>
           </h2>
-          <p className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed">
-            We don't merely consult. We plug deep operational engines directly into your brand, solving product positioning, acquisition, staffing, and marketing simultaneously.
+          <p className="font-sans text-sm sm:text-base text-zinc-500 font-normal leading-relaxed">
+            We don't sell disconnected individual projects. We architect synchronized scaling departments that coordinate directly to multiply your business growth.
           </p>
         </div>
 
-        {/* 6 Divisions Selector Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {SERVICES.map((service) => {
-            const isSelected = service.id === selectedServiceId;
+        {/* Spacious Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+          {bentoServices.map((service, idx) => {
+            const Icon = service.icon;
             return (
-              <div
-                id={`service-card-${service.id}`}
+              <motion.div
                 key={service.id}
-                onClick={() => setSelectedServiceId(service.id)}
-                className={`relative group p-6 rounded-3xl border transition-all duration-300 cursor-pointer ${
-                  isSelected 
-                    ? 'glass border-white/20 bg-white/5 shadow-xl shadow-black/80 ring-1 ring-white/10' 
-                    : 'glass border-white/5 bg-transparent hover:border-white/15'
-                }`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                style={{ background: service.accent }}
+                className={`${service.size} rounded-[32px] p-8 border border-violet-100/70 hover:border-violet-300 transition-all duration-300 cursor-pointer group shadow-soft hover:shadow-premium flex flex-col justify-between relative overflow-hidden`}
               >
-                {/* Micro accent corner */}
-                {isSelected && (
-                  <div className="absolute top-4 right-4 w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                )}
+                
+                {/* Floating Node decoration inside individual bento */}
+                <div className="absolute top-0 right-0 -mr-6 -mt-6 w-24 h-24 bg-violet-200/20 rounded-full blur-2xl pointer-events-none group-hover:bg-violet-300/30 transition-all" />
 
-                <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-xl border transition-all duration-300 ${
-                    isSelected 
-                      ? 'bg-white text-black border-white' 
-                      : 'bg-white/3 text-zinc-400 border-white/8 group-hover:border-white/20 group-hover:text-white'
-                  }`}>
-                    {renderIcon(service.icon, 'w-5 h-5')}
-                  </div>
-                  <div className="space-y-1 pr-4">
-                    <h3 className="font-serif text-base text-white tracking-wide font-normal">{service.title}</h3>
-                    <p className="font-sans text-xs text-zinc-450 line-clamp-1">{service.tagline}</p>
-                  </div>
-                </div>
-
-                <div className="mt-5 flex items-center justify-between">
-                  {service.stat ? (
-                    <div className="font-mono text-[9px] text-zinc-400 uppercase tracking-wider">
-                      <strong className="text-white bg-white/5 px-2 py-1 rounded border border-white/10">{service.stat.value}</strong>
+                {/* Card Top Block */}
+                <div>
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="p-3 w-12 h-12 rounded-2xl bg-white border border-violet-100 flex items-center justify-center text-violet-600 shadow-soft group-hover:bg-violet-600 group-hover:text-white transition-all duration-300">
+                      <Icon className="w-6 h-6" />
                     </div>
-                  ) : (
-                    <div />
-                  )}
-                  <span className={`text-[9px] font-mono tracking-widest uppercase transition-all duration-300 ${
-                    isSelected ? 'text-white translate-x-1' : 'text-zinc-550 group-hover:text-zinc-300'
-                  }`}>
-                    View Blueprint →
-                  </span>
+                    <span className="font-mono text-[10px] text-zinc-400 font-bold group-hover:text-violet-600 transition-colors">0{idx + 1}</span>
+                  </div>
+
+                  <h3 className="font-sans text-xl font-extrabold text-zinc-900 mb-2 group-hover:text-violet-700 transition-colors">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="font-sans text-xs sm:text-sm text-zinc-550 mb-6 leading-relaxed font-normal">
+                    {service.desc}
+                  </p>
                 </div>
-              </div>
+
+                {/* Card Bottom Block: Tactical checklist & CTA */}
+                <div className="space-y-4 pt-4 border-t border-violet-100/50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {service.items.map((item) => (
+                      <div key={item} className="flex items-center space-x-2 text-zinc-700">
+                        <div className="w-4 h-4 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                          <Check className="w-2.5 h-2.5" />
+                        </div>
+                        <span className="text-[11px] font-sans font-medium">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-[10px] font-mono tracking-widest text-violet-600 uppercase font-bold group-hover:translate-x-1 transition-transform">
+                      EXPLORE FRAMEWORK →
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenBooking();
+                      }}
+                      className="p-1 px-3.5 bg-white border border-violet-200 rounded-full text-[10px] font-mono text-zinc-650 hover:bg-violet-50 transition-all flex items-center space-x-1"
+                    >
+                      <span>Request Setup</span>
+                      <ArrowUpRight className="w-3 h-3 text-zinc-400" />
+                    </button>
+                  </div>
+                </div>
+
+              </motion.div>
             );
           })}
-        </div>
-
-        {/* Dynamic Detailed Workspace Showcase Panes */}
-        <div className="relative glass border border-white/10 rounded-3xl p-6 sm:p-10 overflow-hidden">
-          
-          {/* Subtle light effect top edge */}
-          <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-            
-            {/* Left detail description block */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <span className="font-mono text-[9px] tracking-widest text-zinc-500 uppercase font-semibold">Active Blueprint Workspace</span>
-                  <span className="text-zinc-700">|</span>
-                  <span className="font-mono text-[10px] text-white/80 uppercase tracking-widest font-semibold">{selectedService.id}</span>
-                </div>
-                <h3 className="font-serif text-3xl sm:text-4xl text-white tracking-wide">
-                  {selectedService.title}
-                </h3>
-                <p className="font-sans text-sm text-zinc-400 italic">
-                  "{selectedService.tagline}"
-                </p>
-              </div>
-
-              <p className="font-sans text-sm sm:text-base text-zinc-300 font-light leading-relaxed">
-                {selectedService.description}
-              </p>
-
-              {/* Deliverable Lists */}
-              <div className="space-y-3 pt-2">
-                <h4 className="font-mono text-[9px] tracking-widest text-zinc-500 uppercase font-semibold">Tactical Engineering Areas</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {selectedService.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center space-x-2.5">
-                      <div className="flex items-center justify-center w-5 h-5 rounded-md bg-white/5 border border-white/10 text-zinc-300 shrink-0">
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-xs text-zinc-300 font-sans font-light">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right statistics preview highlight card */}
-            <div className="lg:col-span-5 flex flex-col justify-between p-6 glass border border-white/10 rounded-3xl relative space-y-6">
-              
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">Decision Metric</span>
-                  <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase font-semibold">System Audited</span>
-                </div>
-                
-                {selectedService.stat && (
-                  <div className="space-y-1">
-                    <span className="font-mono text-[10px] text-zinc-500 uppercase">Expected System Result</span>
-                    <h4 className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight">{selectedService.stat.value}</h4>
-                    <p className="text-xs text-zinc-400 font-sans italic">{selectedService.stat.label}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Micro interactive mockup content placeholder representing structural analysis schema */}
-              <div className="p-4 bg-black/40 border border-white/5 rounded-2xl space-y-2">
-                <div className="flex items-center space-x-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span className="font-mono text-[8px] text-zinc-500 uppercase tracking-widest font-semibold">Active Client Integration Path</span>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="h-1 bg-white/5 rounded w-full" />
-                  <div className="h-1 bg-white/5 rounded w-11/12" />
-                  <div className="h-1 bg-white/5 rounded w-4/5" />
-                </div>
-              </div>
-
-              {/* Conversion CTA targeting specific service selected */}
-              <button
-                onClick={onOpenBooking}
-                className="w-full py-4 bg-white text-black hover:bg-zinc-200 text-xs font-mono rounded-full font-bold tracking-widest uppercase transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
-              >
-                <span>Commission {selectedService.title.toUpperCase()}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-
-            </div>
-
-          </div>
         </div>
 
       </div>

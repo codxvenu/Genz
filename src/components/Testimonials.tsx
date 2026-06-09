@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Quote, Sparkles, Star, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Quote, Sparkles, Star, ChevronRight, ChevronLeft, Award } from 'lucide-react';
 import { TESTIMONIALS } from '../data';
 
 export default function Testimonials() {
@@ -13,106 +13,118 @@ export default function Testimonials() {
     setActiveIdx(prev => (prev === TESTIMONIALS.length - 1 ? 0 : prev + 1));
   };
 
-  const activeTest = TESTIMONIALS[activeIdx];
+  const activeTest = TESTIMONIALS[activeIdx] || TESTIMONIALS[0];
 
   return (
     <section 
       id="testimonials-section" 
-      className="py-20 sm:py-28 bg-black/95 border-t border-zinc-900 text-white"
+      className="py-24 sm:py-32 bg-violet-50/20 relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[20%] left-[-10%] w-[355px] h-[355px] bg-purple-100/30 rounded-full blur-[80px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header summary text */}
-        <div className="space-y-4 mb-16 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center space-x-2">
-            <span className="w-1 h-3 bg-zinc-500 rounded-full" />
-            <span className="font-mono text-[10px] tracking-widest text-zinc-400 uppercase">Case Ledger Evidence</span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-white tracking-wide">
-            Proven Performance Ledger
+        {/* Upper Tag */}
+        <div className="flex justify-center mb-6">
+          <span className="font-mono text-[9px] tracking-widest text-violet-750 uppercase font-extrabold border border-violet-100 bg-violet-50 px-3.5 py-1.5 rounded-full shadow-soft">
+            Founder Testimonials
+          </span>
+        </div>
+
+        {/* Section Headline */}
+        <div className="text-center max-w-2xl mx-auto space-y-4 mb-20">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-zinc-900 font-extrabold tracking-tight leading-tight">
+            The Trust Behind <br />
+            <span className="text-gradient-purple">Our Growth Systems.</span>
           </h2>
-          <p className="text-sm text-zinc-400 font-light leading-relaxed">
-            Real founders, real statistics, compounding value. When physical or digital brands scale with Gen-Z, the results speak for themselves.
+          <p className="font-sans text-sm sm:text-base text-zinc-550 font-normal leading-relaxed">
+            Read direct narratives from industry leaders who scaled their brand authority and operational efficiency with GBA.
           </p>
         </div>
 
-        {/* Highlight Deck container */}
+        {/* Main interactive slider block container */}
         <div className="max-w-4xl mx-auto">
-          <div className="relative glass border border-white/10 rounded-3xl p-6 sm:p-12 overflow-hidden shadow-2xl">
+          <div className="relative bg-white border border-violet-100/80 rounded-[36px] p-6 sm:p-12 overflow-hidden shadow-premium">
             
-            {/* Background luxury subtle logo */}
-            <Quote className="absolute top-8 right-8 w-24 h-24 text-white/5 pointer-events-none" />
+            {/* Background semi-transparent Quote icon decoration */}
+            <Quote className="absolute top-10 right-10 w-24 h-24 text-violet-100/20 pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               
-              {/* Left Column: Metric highlight indicator and avatar profile */}
+              {/* Left Column: Profile Card */}
               <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5">
                 
-                {/* Micro avatar framed with high-end border */}
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent blur-[2px]" />
+                  <div className="absolute inset-0 rounded-full bg-violet-100/50 blur-[3px] scale-105" />
                   <img
                     src={activeTest.image}
                     alt={activeTest.name}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-white/15 shadow-xl"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-violet-200 shadow-bold relative z-10"
                     referrerPolicy="no-referrer"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="font-serif text-lg text-white font-medium">{activeTest.name}</h4>
-                  <p className="font-mono text-xs text-zinc-500">{activeTest.role}, <span className="text-zinc-400">{activeTest.company}</span></p>
+                  <h4 className="font-sans text-lg font-extrabold text-zinc-900 leading-none">{activeTest.name}</h4>
+                  <p className="font-mono text-[10px] text-zinc-400 font-bold mt-1">
+                    {activeTest.role.toUpperCase()}, <span className="text-violet-605">{activeTest.company.toUpperCase()}</span>
+                  </p>
                 </div>
 
-                {/* Stars visual rate */}
-                <div className="flex items-center space-x-1">
+                {/* Star Ratings */}
+                <div className="flex items-center space-x-1 justify-center lg:justify-start">
                   {[1, 2, 3, 4, 5].map(i => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-white text-white" />
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
 
               </div>
 
-              {/* Right Column: Concrete Quote text and dynamic statistic metric banner */}
-              <div className="lg:col-span-7 flex flex-col justify-between space-y-6 lg:pl-4">
+              {/* Right Column: Narrative Block */}
+              <div className="lg:col-span-7 flex flex-col justify-between space-y-6 lg:pl-6 border-t lg:border-t-0 lg:border-l border-violet-100/60 pt-6 lg:pt-0">
                 
-                {/* Highlights tag */}
-                <div className="inline-flex self-center lg:self-start items-center space-x-2 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/10">
-                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full" />
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-zinc-350">
+                {/* Specific custom feature label */}
+                <div className="inline-flex self-center lg:self-start items-center space-x-2 bg-violet-50/85 px-3.5 py-1.5 rounded-full border border-violet-100">
+                  <span className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-pulse" />
+                  <span className="font-mono text-[9px] uppercase tracking-wider font-extrabold text-violet-750">
                     {activeTest.highlight}
                   </span>
                 </div>
 
-                <p className="font-serif text-base sm:text-lg text-zinc-200 tracking-wide leading-relaxed italic text-center lg:text-left">
+                {/* Real quote block */}
+                <p className="font-sans text-sm sm:text-base text-zinc-700 tracking-wide leading-relaxed italic text-center lg:text-left font-normal">
                   "{activeTest.quote}"
                 </p>
 
-                {/* Core result indicator panel */}
-                <div className="border-t border-white/10 pt-5 flex items-center justify-between">
+                {/* Outcomes display row & arrows */}
+                <div className="border-t border-violet-100/50 pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  
                   <div className="space-y-0.5">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-zinc-500">Audited Growth Result</span>
-                    <h5 className="font-mono text-2xl font-bold text-white tracking-tight">{activeTest.metric}</h5>
-                    <p className="text-[10px] text-zinc-400 font-sans">{activeTest.metricLabel}</p>
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Verified Scalability Metric</span>
+                    <h5 className="font-sans text-2xl font-black text-violet-600 leading-none">{activeTest.metric}</h5>
+                    <p className="text-[10px] text-zinc-550 font-mono tracking-wide font-bold mt-1 uppercase">{activeTest.metricLabel}</p>
                   </div>
 
-                  {/* Manual Navigator controls */}
-                  <div className="flex items-center space-x-2">
+                  {/* Manual Carousel indicators */}
+                  <div className="flex items-center space-x-2 self-center sm:self-auto">
                     <button
                       id="prev-testimonial-btn"
                       onClick={prevTestimonial}
-                      className="p-2 w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/3 hover:bg-white/5 text-zinc-400 hover:text-white transition-all cursor-pointer"
+                      className="p-2.5 w-10 h-10 flex items-center justify-center rounded-full border border-violet-100 bg-white hover:bg-violet-50 text-zinc-500 hover:text-violet-700 shadow-soft transition-all cursor-pointer"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       id="next-testimonial-btn"
                       onClick={nextTestimonial}
-                      className="p-2 w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/3 hover:bg-white/5 text-zinc-400 hover:text-white transition-all cursor-pointer"
+                      className="p-2.5 w-10 h-10 flex items-center justify-center rounded-full border border-violet-100 bg-white hover:bg-violet-50 text-zinc-500 hover:text-violet-700 shadow-soft transition-all cursor-pointer"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
+
                 </div>
 
               </div>

@@ -1,110 +1,160 @@
 import { useState } from 'react';
-import { Sparkles, Calendar, Target, Hourglass, Landmark } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Compass, FileText, Play, ZoomIn, Target, ArrowRight } from 'lucide-react';
 import { PROCESS_STEPS } from '../data';
 
 export default function StepTimeline() {
-  const [activeStepIdx, setActiveStepIdx] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  const activeStep = PROCESS_STEPS[activeStepIdx];
+  // Map state numbers to icons
+  const getStepIcon = (num: number) => {
+    switch (num) {
+      case 1:
+        return <Compass className="w-5 h-5 text-violet-600" />;
+      case 2:
+        return <FileText className="w-5 h-5 text-violet-600" />;
+      case 3:
+        return <Play className="w-5 h-5 text-violet-600" />;
+      case 4:
+        return <ZoomIn className="w-5 h-5 text-violet-600" />;
+      default:
+        return <Compass className="w-5 h-5 text-violet-600" />;
+    }
+  };
+
+  const activeStep = PROCESS_STEPS[activeIdx] || PROCESS_STEPS[0];
 
   return (
     <section 
       id="timeline-section" 
-      className="py-20 sm:py-28 bg-black text-white"
+      className="py-24 sm:py-32 bg-white relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[40%] right-[-10%] w-[350px] h-[350px] bg-violet-100/30 rounded-full blur-[80px]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header Block copy */}
-        <div className="space-y-4 mb-16 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center space-x-2">
-            <span className="w-1 h-3 bg-zinc-500 rounded-full" />
-            <span className="font-mono text-[10px] tracking-widest text-zinc-400 uppercase">Operational Milestones</span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-white tracking-wide">
-            The Integration Sequence
+        {/* Upper Badge */}
+        <div className="flex justify-center mb-6">
+          <span className="font-mono text-[9px] tracking-widest text-violet-750 uppercase font-extrabold border border-violet-100 bg-violet-50 px-3.5 py-1.5 rounded-full shadow-soft">
+            The Timeline Sequence
+          </span>
+        </div>
+
+        {/* Section Title */}
+        <div className="text-center max-w-2xl mx-auto space-y-4 mb-20">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-zinc-900 font-extrabold tracking-tight leading-tight">
+            How We Build <br />
+            <span className="text-gradient-purple">Your Growth Department.</span>
           </h2>
-          <p className="text-sm text-zinc-400 font-light leading-relaxed">
-            How we scale a system from 0 to Hero. Simple milestones, high programmatic intensity, and complete operational transparency.
+          <p className="font-sans text-sm sm:text-base text-zinc-550 font-normal leading-relaxed">
+            Our sequential execution playbook guarantees absolute operational transparency from day one to launch.
           </p>
         </div>
 
-        {/* Timeline Desktop Interactive Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+        {/* Timeline Interactive Layout Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           
-          {/* Left panel: Vertical 6 Steps Navigator */}
-          <div className="lg:col-span-5 space-y-3">
-            <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest block mb-1 font-semibold">Execution Pipeline Sequential</span>
+          {/* Left: Interactive 4-step vertical navigator */}
+          <div className="lg:col-span-5 flex flex-col justify-center space-y-4">
+            <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest font-extrabold mb-1">
+              Sequence Track (Click Steps)
+            </span>
+
             {PROCESS_STEPS.map((step, idx) => {
-              const isActive = idx === activeStepIdx;
+              const isActive = idx === activeIdx;
               return (
                 <button
                   key={step.number}
-                  onClick={() => setActiveStepIdx(idx)}
-                  className={`w-full flex items-center p-4 rounded-2xl border text-left cursor-pointer transition-all duration-300 relative ${
+                  onClick={() => setActiveIdx(idx)}
+                  className={`w-full flex items-center p-5 rounded-3xl border text-left cursor-pointer transition-all duration-300 relative ${
                     isActive 
-                      ? 'bg-white border-white text-black shadow-md' 
-                      : 'glass border-white/5 hover:border-white/15 text-zinc-455'
+                      ? 'bg-violet-600 border-violet-600 text-white shadow-premium' 
+                      : 'bg-white border-violet-100/70 hover:border-violet-300 text-zinc-700 shadow-soft'
                   }`}
                 >
-                  <span className={`font-mono text-xs font-semibold mr-4 ${isActive ? 'text-black' : 'text-zinc-650'}`}>
+                  {/* Step index */}
+                  <span className={`font-mono text-sm font-extrabold mr-4 ${isActive ? 'text-violet-200' : 'text-violet-600'}`}>
                     0{step.number}
                   </span>
-                  <div className="flex-1 space-y-0.5">
-                    <h3 className={`font-serif text-sm tracking-wide ${isActive ? 'text-black font-semibold' : 'text-zinc-300 font-light'}`}>
+
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-sans text-base font-extrabold tracking-tight leading-none">
                       {step.title}
                     </h3>
-                    <p className={`font-mono text-[9px] uppercase ${isActive ? 'text-black/60' : 'text-zinc-500'}`}>{step.duration}</p>
+                    <p className={`font-mono text-[10px] uppercase font-bold ${isActive ? 'text-violet-100' : 'text-zinc-450'}`}>
+                      {step.duration}
+                    </p>
                   </div>
 
-                  {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-black ml-2 animate-pulse" />
+                  {isActive ? (
+                    <div className="w-2 h-2 rounded-full bg-white animate-ping" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:translate-x-1 transition-transform" />
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* Right panel: Active Step details showcase */}
+          {/* Right: Detailed Content Display Cell */}
           <div className="lg:col-span-7">
-            <div className="glass border border-white/10 rounded-3xl p-6 sm:p-10 relative overflow-hidden h-full flex flex-col justify-between">
-              
-              {/* Top hairline glass effect */}
-              <div className="absolute top-0 left-0 w-[1px] h-1/2 bg-gradient-to-b from-white/10 to-transparent" />
-              <div className="absolute -right-24 -bottom-24 w-60 h-60 bg-white/3 rounded-full blur-3xl pointer-events-none" />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIdx}
+                initial={{ opacity: 0, x: 15 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -15 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-[32px] border border-violet-100/70 p-8 sm:p-10 shadow-premium relative overflow-hidden h-full flex flex-col justify-between"
+              >
+                
+                {/* Visual elements */}
+                <div className="absolute top-0 right-0 -mr-12 -mt-12 w-40 h-40 bg-violet-100/20 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="space-y-6 relative z-10">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <div className="flex items-center space-x-2.5">
-                    <span className="font-serif text-3xl sm:text-4xl text-zinc-500 font-light">0{activeStep.number}</span>
-                    <span className="text-zinc-700">|</span>
-                    <span className="font-mono text-[9px] tracking-widest text-zinc-400 uppercase font-semibold">Active Discovery Phases</span>
+                <div className="space-y-8">
+                  {/* Step badge info */}
+                  <div className="flex justify-between items-center pb-4 border-b border-violet-100/50">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2.5 bg-violet-50 rounded-xl border border-violet-100">
+                        {getStepIcon(activeStep.number)}
+                      </div>
+                      <div>
+                        <span className="font-mono text-[9px] text-zinc-400 uppercase tracking-widest font-extrabold">Active Milestone</span>
+                        <h4 className="font-sans text-xs font-extrabold text-zinc-700 leading-none">STAGE 0{activeStep.number}</h4>
+                      </div>
+                    </div>
+
+                    <div className="px-3 py-1.5 bg-violet-50 border border-violet-100 rounded-full font-mono text-[10px] text-violet-600 font-extrabold">
+                      {activeStep.duration}
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1 border border-white/10 px-3 py-1 bg-white/5 rounded-full">
-                    <Hourglass className="w-3 h-3 text-zinc-400" />
-                    <span className="font-mono text-[10px] text-zinc-400">{activeStep.duration}</span>
+
+                  {/* Descriptions */}
+                  <div className="space-y-3">
+                    <h3 className="font-sans text-2xl sm:text-3xl text-zinc-900 font-extrabold tracking-tight leading-tight">
+                      {activeStep.title}
+                    </h3>
+                    <p className="font-sans text-xs sm:text-sm text-zinc-550 leading-relaxed font-normal">
+                      {activeStep.description}
+                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-3 py-2">
-                  <h4 className="font-serif text-2xl sm:text-3xl text-white tracking-wide">{activeStep.title}</h4>
-                  <p className="font-sans text-sm sm:text-base text-zinc-300 leading-relaxed font-light">
-                    {activeStep.description}
+                {/* Scope deliverable assets statement */}
+                <div className="mt-8 p-4 bg-violet-50/50 border border-violet-100/50 rounded-2xl space-y-2">
+                  <div className="flex items-center space-x-2 text-violet-700">
+                    <Target className="w-4 h-4 text-violet-600" />
+                    <span className="font-mono text-[9px] uppercase tracking-wider font-extrabold">CONCRETE STAGE DELIVERABLE</span>
+                  </div>
+                  <p className="font-mono text-xs text-zinc-800 font-bold pl-6">
+                    {activeStep.deliverable}
                   </p>
                 </div>
-              </div>
 
-              {/* Physical Deliverable asset tag */}
-              <div className="mt-8 p-4 bg-white/3 border border-white/10 rounded-2xl space-y-2 relative z-10">
-                <div className="flex items-center space-x-2 text-zinc-400">
-                  <Target className="w-3.5 h-3.5 text-white" />
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 font-semibold">Phase Concrete Deliverable Assets</span>
-                </div>
-                <p className="font-mono text-xs text-white leading-normal pl-5">
-                  {activeStep.deliverable}
-                </p>
-              </div>
-
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
         </div>
