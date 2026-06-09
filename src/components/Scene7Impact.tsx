@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Award, Compass } from 'lucide-react';
 
 export default function Scene7Impact() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -8,24 +7,24 @@ export default function Scene7Impact() {
 
   const slides = [
     {
-      metric: '+320%',
-      title: 'Pipeline Acceleration',
-      desc: 'Average spike in qualified lead systems within 60 days of integration.'
+      text: "The Right Brand Changes Everything.",
+      tagline: "DESIGN IS NARRATIVE POWER",
+      image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200"
     },
     {
-      metric: '3X',
-      title: 'Customer Onboarding',
-      desc: 'Typical multiplier of monthly brand scaling velocity across target channels.'
+      text: "The Right Strategy Multiplies Growth.",
+      tagline: "TACTICAL PRECISION OVER NOISE",
+      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1200"
     },
     {
-      metric: '50+',
-      title: 'Global Operators Placed',
-      desc: 'Elite personnel embedded in critical engineering, recruiting, and consulting roles.'
+      text: "The Right Team Accelerates Success.",
+      tagline: "ELITE OPERATIONS EMBEDDED",
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200"
     },
     {
-      metric: '∞',
-      title: 'Growth Leverage',
-      desc: 'Empowering endless scalable horizons by replacing fragmented agency setups.'
+      text: "The Right Partner Scales It.",
+      tagline: "UNIFIED DIRECTION AT SCALE",
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
     }
   ];
 
@@ -36,11 +35,8 @@ export default function Scene7Impact() {
       const elementHeight = rect.height;
       const scrollOffset = -rect.top;
       
-      // Calculate fraction
       const fraction = Math.min(Math.max(scrollOffset / (elementHeight - window.innerHeight), 0), 1);
-      
-      // Split 0 to 1 into slides length
-      const currentIdx = Math.min(Math.floor(fraction * slides.length), slides.length - 1);
+      const currentIdx = Math.min(Math.floor(fraction * (slides.length + 0.15)), slides.length - 1);
       setActiveSlide(currentIdx);
     };
 
@@ -55,68 +51,82 @@ export default function Scene7Impact() {
     <div
       ref={containerRef}
       id="scene-impact"
-      className="relative h-[250vh] bg-zinc-950 select-none overflow-hidden"
+      className="relative h-[320vh] bg-black select-none overflow-hidden"
     >
-      {/* Sticky container covering screen */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center bg-zinc-950 px-4">
+      {/* Sticky viewport frame */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center bg-black overflow-hidden">
         
-        {/* Soft violet spotlight dots in the dark corner/center */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-900/10 rounded-full blur-[140px]" />
-          <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[120px]" />
+        {/* Full-screen Background Image Sequence transition */}
+        <div className="absolute inset-0 z-0">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={activeItem.image}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 0.35, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <img
+                src={activeItem.image}
+                alt="Cinematic Architectural Space"
+                className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.1] grayscale"
+                referrerPolicy="no-referrer"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10" />
         </div>
 
-        {/* Header information info */}
-        <div className="absolute top-14 left-12 right-12 flex justify-between items-center z-10 border-b border-white/5 pb-4">
+        {/* Minimal status indicator indexes */}
+        <div className="absolute top-16 left-8 right-8 flex justify-between items-center z-20 border-b border-white/5 pb-4">
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+            PHASE III &bull; THE COVENANT
+          </span>
           <div className="flex items-center space-x-2">
-            <Award className="w-4 h-4 text-violet-400" />
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white font-extrabold">IMPACT ANALYSIS INDEX</span>
-          </div>
-          <div className="font-mono text-[10px] text-zinc-500 font-extrabold flex items-center space-x-2">
-            <span>SECTIONS</span>
-            <div className="flex items-center space-x-1">
-              {slides.map((_, idx) => (
+            <span className="font-mono text-[9px] text-zinc-500 font-bold">0{activeSlide + 1} / 0{slides.length}</span>
+            <div className="flex space-x-1">
+              {slides.map((_, i) => (
                 <div 
-                  key={idx}
-                  className={`h-1 rounded-full transition-all duration-300 ${idx === activeSlide ? 'bg-violet-400 w-4' : 'bg-white/10 w-1'}`}
+                  key={i}
+                  className={`h-[2px] transition-all duration-300 ${i === activeSlide ? 'bg-white w-5' : 'bg-white/10 w-2'}`}
                 />
               ))}
             </div>
           </div>
         </div>
 
-        {/* Narrative Workspace */}
-        <div className="max-w-7xl mx-auto flex flex-col justify-center items-center text-center space-y-6 relative z-10 h-full w-full">
+        {/* Editorial Text Overlay workspace */}
+        <div className="relative z-20 max-w-5xl mx-auto text-center px-6 flex flex-col items-center justify-center h-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide}
-              initial={{ opacity: 0, scale: 0.85, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, scale: 1.15, filter: 'blur(10px)' }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col justify-center items-center w-full"
+              initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-4"
             >
-              {/* Massive animating number */}
-              <h2 className="font-sans text-[110px] sm:text-[180px] md:text-[240px] lg:text-[290px] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-violet-950/40 leading-none select-none select-none select-none">
-                {activeItem.metric}
+              <span className="font-mono text-[10px] tracking-[0.3em] text-purple-400 font-bold block mb-2 uppercase">
+                {activeItem.tagline}
+              </span>
+              <h2 className="font-serif text-5xl sm:text-7xl md:text-8xl text-white font-normal leading-[1.05] tracking-tight max-w-4xl">
+                {activeItem.text.endsWith('.') ? (
+                  <>
+                    <span>{activeItem.text.slice(0, -1)}</span>
+                    <span className="text-[#7C3AED]">.</span>
+                  </>
+                ) : (
+                  activeItem.text
+                )}
               </h2>
-
-              {/* Accompanying descriptive info */}
-              <div className="space-y-2 max-w-md pt-4">
-                <h4 className="font-mono text-[10px] sm:text-xs tracking-[0.2em] text-violet-400 uppercase font-extrabold">
-                  {activeItem.title}
-                </h4>
-                <p className="font-sans text-xs sm:text-sm text-zinc-400 font-light leading-relaxed">
-                  {activeItem.desc}
-                </p>
-              </div>
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Slider manual override triggers */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center space-y-1 opacity-40">
-          <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest font-extrabold">HOLD SCROLL TO TRANSITION</span>
+        {/* Bottom indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-1 opacity-40 z-20">
+          <span className="font-mono text-[8px] text-zinc-500 uppercase tracking-widest font-extrabold">CONTINUE DOWNWARD</span>
         </div>
 
       </div>

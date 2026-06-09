@@ -40,13 +40,13 @@ export default function App() {
   return (
     <div 
       id="genz-business-agency-app" 
-      className="min-h-screen bg-white text-zinc-900 font-sans antialiased selection:bg-violet-600 selection:text-white relative"
+      className="min-h-screen bg-black text-white font-sans antialiased selection:bg-[#7C3AED] selection:text-white relative"
     >
       
       {/* Absolute ambient lights background */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
-        <div className="absolute top-[5%] left-[-15%] w-[800px] h-[800px] bg-violet-100/40 rounded-full blur-[140px]" />
-        <div className="absolute bottom-[10%] right-[-15%] w-[800px] h-[800px] bg-purple-100/30 rounded-full blur-[140px]" />
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-[5%] left-[-15%] w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[10%] right-[-15%] w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[140px]" />
       </div>
 
       <div className="relative z-10 flex flex-col">

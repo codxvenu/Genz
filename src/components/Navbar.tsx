@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBooking: () => void;
@@ -21,7 +21,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // height of fixed navbar
+      const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -48,24 +48,24 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
       id="main-navigation-bar"
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/85 backdrop-blur-md border-b border-purple-100/50 py-3.5 shadow-soft' 
-          : 'bg-transparent py-5'
+          ? 'bg-black/75 backdrop-blur-md border-b border-white/5 py-4 shadow-2xl' 
+          : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between">
           
           {/* Logo Brand / Identity */}
           <div 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center space-x-2.5 cursor-pointer group"
+            className="flex items-center space-x-3 cursor-pointer group select-none"
           >
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-violet-600 text-white shadow-md group-hover:bg-violet-700 transition-all duration-300">
-              <Sparkles className="w-5 h-5 text-white group-hover:rotate-12 transition-all duration-300" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-full border border-purple-500/30 text-white bg-black hover:bg-neutral-900 transition-all duration-300">
+              <span className="font-serif text-sm font-normal text-white group-hover:rotate-12 transition-all">G</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-sans text-xl tracking-tight text-zinc-900 font-extrabold leading-none">GBA</span>
-              <span className="font-mono text-[9px] tracking-wider text-violet-600 uppercase mt-0.5 font-bold">Gen-Z Business Agency</span>
+              <span className="font-serif text-lg tracking-wider text-white font-normal leading-none">GBA</span>
+              <span className="font-mono text-[7px] tracking-[0.25em] text-[#A1A1AA] uppercase mt-0.5 font-bold">GEN-Z BUSINESS AGENCY</span>
             </div>
           </div>
  
@@ -75,7 +75,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
               <button 
                 key={link.target}
                 onClick={() => scrollToSection(link.target)}
-                className="text-[10px] font-mono text-zinc-600 hover:text-violet-600 transition-colors tracking-widest cursor-pointer font-extrabold"
+                className="text-[9px] font-mono text-zinc-400 hover:text-white transition-colors tracking-[0.2em] cursor-pointer font-bold"
               >
                 {link.label}
               </button>
@@ -86,10 +86,10 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={onOpenBooking}
-              className="group flex items-center space-x-1.5 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-mono rounded-full tracking-widest font-bold uppercase transition-all shadow-md shadow-violet-200 cursor-pointer"
+              className="group flex items-center space-x-1.5 px-5 py-2 w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-[9px] font-mono rounded-full tracking-widest font-bold uppercase transition-all shadow-md shadow-purple-900/40 cursor-pointer"
             >
               <span>Book Call</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-violet-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
           </div>
  
@@ -97,7 +97,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1 px-4 py-1.5 text-xs font-mono text-zinc-700 hover:text-violet-600 border border-violet-100 bg-violet-50/50 hover:bg-violet-100/50 rounded-full transition-all cursor-pointer font-bold"
+              className="px-4 py-1.5 text-[9px] font-mono text-zinc-300 hover:text-white border border-white/10 bg-white/5 rounded-full transition-all cursor-pointer font-bold tracking-widest"
             >
               {mobileMenuOpen ? 'CLOSE' : 'MENU'}
             </button>
@@ -108,28 +108,28 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
  
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-lg border-b border-violet-100 py-6 px-4 space-y-4 animate-fade-in">
-          <div className="flex flex-col space-y-4">
+        <div className="md:hidden bg-black/95 backdrop-blur-lg border-b border-white/5 py-8 px-6 space-y-6 animate-fade-in">
+          <div className="flex flex-col space-y-5">
             {navLinks.map(link => (
               <button 
                 key={link.target}
                 onClick={() => scrollToSection(link.target)}
-                className="text-left py-1 text-xs font-mono text-zinc-600 hover:text-violet-600 transition-colors tracking-widest uppercase font-extrabold"
+                className="text-left py-1 text-[10px] font-mono text-zinc-400 hover:text-white transition-colors tracking-widest uppercase font-bold"
               >
                 {link.label}
               </button>
             ))}
             
-            <div className="pt-4 border-t border-purple-100">
+            <div className="pt-6 border-t border-white/5">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenBooking();
                 }}
-                className="w-full flex items-center justify-center space-x-1.5 py-3.5 bg-violet-600 text-white text-xs font-mono rounded-full font-bold tracking-widest uppercase transition-all cursor-pointer"
+                className="w-full flex items-center justify-center space-x-1.5 py-3.5 bg-[#7C3AED] text-white text-[10px] font-mono rounded-full font-bold tracking-widest uppercase transition-all cursor-pointer"
               >
                 <span>BOOK STRATEGY CALL</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-purple-100" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-white" />
               </button>
             </div>
           </div>
