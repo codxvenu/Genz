@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import RevolvingOrbVideo from './RevolvingOrbVideo';
+import ThreeEnergyOrb from './ThreeEnergyOrb';
 
 export default function FloatingNarrativeOrb() {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [time, setTime] = useState(0);
 
   // States to keep track of section scroll metrics
   const [scrollStats, setScrollStats] = useState({
@@ -13,6 +14,18 @@ export default function FloatingNarrativeOrb() {
     entersProgress: 0,
     activeSection: 'hero', // 'hero' | 'story' | 'journey' | 'enters' | 'informational'
   });
+
+  // Small internal ticker loop for subtle floating ambient hover (so it always is alive even when still)
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = Date.now();
+    const updateTime = () => {
+      setTime((Date.now() - startTime) / 1000);
+      animationFrameId = requestAnimationFrame(updateTime);
+    };
+    animationFrameId = requestAnimationFrame(updateTime);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -144,112 +157,223 @@ export default function FloatingNarrativeOrb() {
     };
   }, []);
 
-  // Compute exact coordinates, size, opacity, and intensity depending on the active section & progress
-  let x = 0; // translation percentages of viewport width
-  let y = 0; // translation percentages of viewport height
-  let size = 520; // width/height in pixels
-  let opacity = 0.45; // custom dim/bright balance
-  let filterBrightness = 95; // percentages
-  let filterContrast = 100;
-
-  const { activeSection, heroProgress, storyProgress, journeyProgress, entersProgress } = scrollStats;
-
-  // Diagonal journey responsive coordinates
+  // Base coordinates limits based on responsive views
   const isMobile = windowWidth < 640;
   const maxSwingX = isMobile ? 12 : 25; // swing boundaries
   const maxSwingY = isMobile ? 10 : 18;
 
+  // Define variables that change dynamically according to refined story stages
+  let x = 0; // translation percentage of viewport width
+  let y = 0; // translation percentage of viewport height
+  let size = isMobile ? 240 : 380;
+  let opacity = 0.25;
+  let filterBrightness = 80;
+  let filterContrast = 100;
+  let glowColor = '#7C3AED'; // Royal Purple default
+  let trailScale = 1.0;
+  let trailOpacity = 0.0;
+
+  const { activeSection, heroProgress, storyProgress, journeyProgress, entersProgress } = scrollStats;
+
+  // Real-time organic float calculation (Lissajous-inspired soft drift)
+  const hoverX = Math.sin(time * 0.8) * (isMobile ? 0.8 : 1.5);
+  const hoverY = Math.cos(time * 0.6) * (isMobile ? 0.6 : 1.2);
+
   if (activeSection === 'hero') {
-    // 1. Scene Hero Intro - Orb is centered and dim
+    // PHASE 1 — ORIGIN
+    // perfectly centered, subtle breathing, low mysterious opacity, not active yet
     x = 0;
     y = 0;
-    size = isMobile ? 320 : 520;
-    // Fade out slightly towards the transition to Section 2
-    opacity = 0.45 - heroProgress * 0.15;
+    size = isMobile ? 230 : 350;
+    opacity = 0.22 - heroProgress * 0.04; // subtle holding potential
+    filterBrightness = 75;
+    trailOpacity = 0.0;
   } 
   else if (activeSection === 'story') {
-    // 2. Word Transition: Imagine -> Create -> Build -> Scale -> Lead -> Dominate
-    // Diagonal scroll-driven flow: starts center, sweep lower-left, then upper-right, then back near center
-    size = isMobile ? 340 : 540;
-
-    if (storyProgress < 0.35) {
-      // Phase 2a: Imagine -> Create (drifts from center to lower-left area)
-      const p = storyProgress / 0.35; // local progress [0, 1]
-      x = -maxSwingX * p;
-      y = maxSwingY * p;
-      opacity = 0.35 + p * 0.28; // gets brighter
-      filterBrightness = 95 + p * 15;
-      size += p * 30;
-    } else if (storyProgress < 0.75) {
-      // Phase 2b: Build -> Scale -> Lead (sweeps from lower-left dynamically to upper-right area, avoiding central text completely!)
-      const p = (storyProgress - 0.35) / 0.4; // local [0, 1]
-      x = -maxSwingX + (maxSwingX * 2) * p;
-      y = maxSwingY - (maxSwingY * 2) * p;
-      opacity = 0.63 + p * 0.12; 
-      filterBrightness = 110 + p * 10;
-      size += 30 + p * 20;
-    } else {
-      // Phase 2c: Dominate (moves back near center-right space to prepare for the business core stage)
-      const p = (storyProgress - 0.75) / 0.25; // local [0, 1]
-      x = maxSwingX - (maxSwingX * 0.8) * p;
-      y = -maxSwingY + (maxSwingY * 0.6) * p;
-      opacity = 0.75 - p * 0.2;
-      filterBrightness = 120 - p * 20;
-      size += 50 - p * 40;
+    // PHASE 2 — STORY INTRODUCTION SEQUENCE (Imagine, Create, Build, Scale, Lead, Dominate)
+    
+    if (storyProgress < 0.33) {
+      // PHASE 2A — EXPLORATION ("Imagine" & "Create")
+      // Drifts to lower left. Organic, searching movement. Slightly larger, deeper violet glow.
+      const p = storyProgress / 0.33;
+      
+      // Interpolate center -> lower-left
+      x = -maxSwingX * 0.95 * p;
+      y = maxSwingY * 0.85 * p;
+      
+      size = (isMobile ? 230 : 350) + p * (isMobile ? 30 : 50);
+      opacity = 0.22 + p * 0.28; // builds up
+      filterBrightness = 75 + p * 20; // 75 -> 95
+      glowColor = '#6D28D9'; // slightly deeper purple
+      trailOpacity = p * 0.15; // starting trail hint
+      trailScale = 1.05;
+    } 
+    else if (storyProgress < 0.39) {
+      // SUSPENSE / RETENTION PAUSE (Hold just before the colossal sweep)
+      // Creates a physical deceleration range between key stages to let text register
+      x = -maxSwingX * 0.95;
+      y = maxSwingY * 0.85;
+      size = isMobile ? 260 : 400;
+      opacity = 0.50;
+      filterBrightness = 95;
+      trailOpacity = 0.15;
+      trailScale = 1.1;
+    }
+    else if (storyProgress < 0.76) {
+      // PHASE 2B — DISCOVERY ("Build", "Scale", "Lead")
+      // The dramatic sweeping momentum toward upper-left/upper-right. Extremely bright, energetic.
+      const p = (storyProgress - 0.39) / 0.37; // local local normalize
+      
+      // Elegant curved sweep path using sin/cos interpolation to form an arc avoiding the header titles
+      const startX = -maxSwingX * 0.95;
+      const startY = maxSwingY * 0.85;
+      const endX = maxSwingX * 1.05;
+      const endY = -maxSwingY * 1.05;
+      
+      // Linear component with a cinematic bezier arc lift
+      x = startX + (endX - startX) * p;
+      // Add a slight arc upwards to avoid textual elements and look organic
+      const arcLift = Math.sin(p * Math.PI) * (isMobile ? -4 : -8);
+      y = startY + (endY - startY) * p + arcLift;
+      
+      size = (isMobile ? 260 : 400) + p * (isMobile ? 70 : 130); // scale max reaches ~530px
+      opacity = 0.50 + p * 0.30; // very luminous/high presence
+      filterBrightness = 95 + p * 40; // 95 -> 135
+      filterContrast = 100 + p * 20;
+      glowColor = '#8B5CF6'; // radiant neon violet
+      
+      // Intense atmospheric aura trailing representation
+      trailOpacity = 0.45 + p * 0.15;
+      trailScale = 1.25;
+    } 
+    else {
+      // PHASE 2C — CLARITY ("Dominate")
+      // After dramatic sweep, it slows down and docks at center-right. Shifting from ambition to mastery.
+      const p = (storyProgress - 0.76) / 0.24;
+      
+      const startX = maxSwingX * 1.05;
+      const startY = -maxSwingY * 1.05;
+      const endX = maxSwingX * 0.65; // settled center-right
+      const endY = maxSwingY * 0.10; // slightly above vertical center
+      
+      x = startX + (endX - startX) * p;
+      y = startY + (endY - startY) * p;
+      
+      // Reduce scale and brightness slightly, showing precision, absolute coordination
+      size = (isMobile ? 330 : 530) - p * (isMobile ? 50 : 80);
+      opacity = 0.80 - p * 0.25; // 0.8 -> 0.55
+      filterBrightness = 135 - p * 30; // 135 -> 105
+      glowColor = '#7C3AED';
+      trailOpacity = 0.60 * (1 - p); // fade out discovery trailing
+      trailScale = 1.25 - p * 0.15;
     }
   } 
   else if (activeSection === 'journey') {
-    // 3. Isolated stage (Silo matrix)
-    // Float the orb in a supporting background quadrant to occupy empty negative space softly
-    x = -maxSwingX * 0.75;
-    y = -maxSwingY * 0.5;
-    size = isMobile ? 260 : 420;
-    // Dim the orb down significantly so users focus on the chaotic problem lines & red alerts
-    opacity = 0.22;
-    filterBrightness = 80;
+    // PHASE 3 — TRANSITION TO ENVIRONMENTAL ATMOSPHERE (GRID SECTION)
+    // Drift to upper-left edge and fade slowly, transforming into quiet environmental backlighting.
+    const p = Math.min(journeyProgress * 3.0, 1.0); // fast transition within the top of the grid section
+    
+    const startX = maxSwingX * 0.65;
+    const startY = maxSwingY * 0.10;
+    const endX = -maxSwingX * 0.90; // upper-left top edge
+    const endY = -maxSwingY * 0.80;
+    
+    x = startX + (endX - startX) * p;
+    y = startY + (endY - startY) * p;
+    
+    // Scale becomes smaller and humble
+    size = (isMobile ? 280 : 450) - p * (isMobile ? 60 : 110);
+    
+    // Gradual decrease to a clean static energy: opacity between 0.12 and 0.22 (perfectly aligned!)
+    opacity = 0.55 - p * 0.38; // 0.55 -> 0.17
+    filterBrightness = 105 - p * 30; // 105 -> 75
+    glowColor = '#4C1D95'; // deep dark violet tone, extremely subtle
+    trailOpacity = 0.05;
+    trailScale = 1.0;
   } 
   else if (activeSection === 'enters') {
-    // 4. GBA Enters Unification stage
-    // The orb slowly travels from the side back to absolute center, locking behind GBA shield as the engine!
-    const backToCenter = Math.min(entersProgress * 1.8, 1);
+    // PHASE 4 — GBA ENTERS CENTER ENGINE LOCK
+    // The orb slowly pulls from the upper-left quadrant to absolute center behind GBA shield graphic
+    const backToCenter = Math.min(entersProgress * 1.6, 1);
     
-    x = (-maxSwingX * 0.75) * (1 - backToCenter);
-    y = (-maxSwingY * 0.5) * (1 - backToCenter);
+    x = (-maxSwingX * 0.90) * (1 - backToCenter);
+    y = (-maxSwingY * 0.80) * (1 - backToCenter);
     
-    // Scale starts normal, and gets larger as it locks into the absolute center Engine
-    size = (isMobile ? 260 : 420) + backToCenter * (isMobile ? 140 : 200);
-    
-    // Brighten up to represent energy unification
-    opacity = 0.22 + backToCenter * 0.42; 
-    filterBrightness = 80 + backToCenter * 45;
-    filterContrast = 100 + backToCenter * 15;
+    size = (isMobile ? 220 : 340) + backToCenter * (isMobile ? 160 : 220); // expands dynamically
+    opacity = 0.17 + backToCenter * 0.48; // expands to prominent engine status
+    filterBrightness = 75 + backToCenter * 55;
+    filterContrast = 100 + backToCenter * 20;
+    glowColor = '#8B5CF6';
+    trailOpacity = backToCenter * 0.40;
+    trailScale = 1.15;
   } 
   else {
-    // 5. Informational content-heavy sections where the orb is hidden to keep the layout quiet & clean
+    // PHASE 5 — INFORMATIONAL / FOOTER QUIETUDE
     opacity = 0;
+    trailOpacity = 0;
   }
 
-  // Set up spring-interpolated coordinates to ensure movement is butter-smooth and luxury-grade
-  const springConfig = { damping: 35, stiffness: 60 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-  const springSize = useSpring(size, springConfig);
-  const springOpacity = useSpring(opacity, springConfig);
-  const springBrightness = useSpring(filterBrightness, springConfig);
+  // Set up spring-interpolated coordinate sets to guarantee professional cinematic friction/weight
+  // Stiffness & Damping values tuned carefully to feel weighted rather than computerized
+  const primarySpringConfig = { damping: 45, stiffness: 45 }; // slightly heavier, luxury drift feel
+  const trailingSpringConfig = { damping: 55, stiffness: 18 }; // deeper damping, slower response for the trails
 
+  const springX = useSpring(x + hoverX, primarySpringConfig);
+  const springY = useSpring(y + hoverY, primarySpringConfig);
+  const springSize = useSpring(size, primarySpringConfig);
+  const springOpacity = useSpring(opacity, primarySpringConfig);
+  const springBrightness = useSpring(filterBrightness, primarySpringConfig);
+
+  // Trailing springs specifically tuned to lag behind the primary movement to paint the kinetic momentum
+  const trailSpringX = useSpring(x, trailingSpringConfig);
+  const trailSpringY = useSpring(y, trailingSpringConfig);
+  const trailSpringOpacity = useSpring(trailOpacity, trailingSpringConfig);
+
+  // Direct transform bindings to view% for Framer Motion accelerated layer
   const viewX = useTransform(springX, (val) => `${val}vw`);
   const viewY = useTransform(springY, (val) => `${val}vh`);
 
+  const trailViewX = useTransform(trailSpringX, (val) => `${val}vw`);
+  const trailViewY = useTransform(trailSpringY, (val) => `${val}vh`);
+
   useEffect(() => {
-    springX.set(x);
-    springY.set(y);
+    springX.set(x + hoverX);
+    springY.set(y + hoverY);
     springSize.set(size);
     springOpacity.set(opacity);
     springBrightness.set(filterBrightness);
-  }, [x, y, size, opacity, filterBrightness, activeSection]);
+
+    trailSpringX.set(x);
+    trailSpringY.set(y);
+    trailSpringOpacity.set(trailOpacity);
+  }, [x, y, size, opacity, filterBrightness, trailOpacity, hoverX, hoverY, activeSection]);
 
   return (
     <div className="fixed inset-0 z-[2] flex items-center justify-center pointer-events-none select-none overflow-hidden">
+      
+      {/* 
+        SECONDARY KINETIC TRAIL / ATMOSPHERIC DISTORTION
+        This element lags behind the primary orb with a different spring configuration (heavier damping, slow response),
+        rendering as a blurred atmospheric echo during high-velocity sweep stages.
+      */}
+      <motion.div
+        style={{
+          x: trailViewX,
+          y: trailViewY,
+          width: springSize,
+          height: springSize,
+          opacity: trailSpringOpacity,
+          scale: trailScale,
+          filter: 'blur(90px) opacity(0.8)',
+          backgroundColor: glowColor,
+        }}
+        className="absolute rounded-full pointer-events-none select-none z-[1] mix-blend-color-dodge"
+      />
+
+      {/* 
+        PRIMARY FLOATING APP ORB
+        The focal narrative object containing the revolving 3D high-fidelity kinetic source.
+      */}
       <motion.div
         style={{
           x: viewX,
@@ -260,19 +384,25 @@ export default function FloatingNarrativeOrb() {
         }}
         className="relative flex items-center justify-center transition-opacity duration-700 pointer-events-none"
       >
-        <RevolvingOrbVideo
-          style={{
-            filter: `brightness(${filterBrightness}%) contrast(${filterContrast}%)`,
-          }}
-          className="w-full h-full"
+        <ThreeEnergyOrb
+          activeSection={activeSection}
+          heroProgress={heroProgress}
+          storyProgress={storyProgress}
+          journeyProgress={journeyProgress}
+          entersProgress={entersProgress}
+          isMobile={isMobile}
         />
 
-        {/* Ambient surrounding aura/glow overlay moving with the orb */}
+        {/* Dynamic primary ambient inner boundary glow */}
         <div 
-          className="absolute inset-[15%] bg-[#7C3AED]/20 mix-blend-color-dodge rounded-full filter blur-[80px] pointer-events-none animate-pulse-soft"
-          style={{ animationDuration: '4s' }}
+          className="absolute inset-[15%] mix-blend-color-dodge rounded-full filter blur-[70px] pointer-events-none animate-pulse-soft"
+          style={{ 
+            animationDuration: '5s',
+            background: `radial-gradient(circle, ${glowColor} 0%, transparent 100%)` 
+          }}
         />
       </motion.div>
     </div>
   );
 }
+
