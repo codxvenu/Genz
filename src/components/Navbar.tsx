@@ -10,10 +10,17 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticked = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticked = false;
+        });
+        ticked = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

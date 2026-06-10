@@ -6,20 +6,43 @@ export default function Scene2ScrollStoryIntro() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let cachedTop = 0;
+    let cachedHeight = 0;
+
+    const measure = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const elementHeight = rect.height;
-      const scrollOffset = -rect.top;
-
-      // Compute progress from 0 to 1 of this specific section
-      const progress = Math.min(Math.max(scrollOffset / (elementHeight - window.innerHeight), 0), 1);
-      setScrollProgress(progress);
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      cachedTop = rect.top + scrollTop;
+      cachedHeight = rect.height;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    measure();
+    window.addEventListener('resize', measure);
+    const measureInterval = setInterval(measure, 1500);
+
+    let ticked = false;
+    const handleScroll = () => {
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollOffset = scrollY - cachedTop;
+          const progress = Math.min(Math.max(scrollOffset / (cachedHeight - window.innerHeight), 0), 1);
+          setScrollProgress(progress);
+          ticked = false;
+        });
+        ticked = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Initial run
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      clearInterval(measureInterval);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const words = [
@@ -40,22 +63,13 @@ export default function Scene2ScrollStoryIntro() {
     <div
       ref={containerRef}
       id="scene-scroll-story"
-      className="relative h-[300vh] bg-black select-none pointer-events-none"
+      className="relative h-[300vh] bg-transparent select-none pointer-events-none"
     >
       {/* Sticky content frame */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4 sm:px-8">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4 sm:px-8">
         
-        {/* Unified Cinematic Spotlight Orb Target */}
-        <div 
-          className="orb-target absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
-          data-orb-scale="0.8"
-          data-orb-opacity="0.25"
-          data-orb-glow="rgba(139, 92, 246, 0.15)"
-          data-orb-theme="normal"
-          data-orb-mask="false"
-        >
-          <div className="w-[300px] aspect-square" />
-        </div>
+        {/* Subtle royal purple atmospheric glow behind the words */}
+        <div className="absolute w-[500px] h-[500px] rounded-full bg-[#7C3AED]/5 blur-[150px] mix-blend-screen pointer-events-none" />
 
         {/* Mammoth Morphing Word with AnimatePresence */}
         <div className="flex flex-col items-center justify-center text-center max-w-4xl z-10">

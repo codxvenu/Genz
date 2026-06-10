@@ -22,29 +22,73 @@ export default function Scene5StickyStorytelling() {
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      const elements = services.map(s => document.getElementById(`service-visual-${s.id}`));
-      const viewportHeight = window.innerHeight;
+    interface ElementMetric {
+      id: string;
+      top: number;
+      height: number;
+    }
+    let cachedMetrics: ElementMetric[] = [];
 
-      let closestId = 'branding';
-      let closestDistance = Infinity;
-
-      elements.forEach(el => {
-        if (!el) return;
+    const measure = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      cachedMetrics = services.map(s => {
+        const el = document.getElementById(`service-visual-${s.id}`);
+        if (!el) return { id: s.id, top: 0, height: 0 };
         const rect = el.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - viewportHeight / 2);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestId = el.id.replace('service-visual-', '');
-        }
+        return {
+          id: s.id,
+          top: rect.top + scrollTop,
+          height: rect.height
+        };
       });
-
-      setActiveTab(closestId);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    measure();
+    window.addEventListener('resize', measure);
+    const measureInterval = setInterval(measure, 1500);
+
+    let ticked = false;
+    const handleScroll = () => {
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          const viewportHeight = window.innerHeight;
+          const viewportCenter = scrollY + viewportHeight / 2;
+
+          let closestId = 'branding';
+          let closestDistance = Infinity;
+
+          cachedMetrics.forEach(metric => {
+            if (metric.height === 0) return;
+            const elementCenter = metric.top + metric.height / 2;
+            const distance = Math.abs(elementCenter - viewportCenter);
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestId = metric.id;
+            }
+          });
+
+          setActiveTab(closestId);
+          ticked = false;
+        });
+        ticked = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Quick delay check to let initial layout paint complete fully, ensuring accurate measurements
+    const initTimer = setTimeout(() => {
+      measure();
+      handleScroll();
+    }, 100);
+
+    return () => {
+      clearTimeout(initTimer);
+      clearInterval(measureInterval);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
@@ -144,54 +188,25 @@ export default function Scene5StickyStorytelling() {
               </div>
 
               {/* Graphic Experience */}
-              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-zinc-950 flex items-center justify-center">
-                {/* Unified Cinematic Spotlight Orb Target */}
-                <div 
-                  className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-                  data-orb-scale="1.05"
-                  data-orb-opacity="0.55"
-                  data-orb-glow="rgba(167, 139, 250, 0.25)"
-                  data-orb-theme="normal"
-                  data-orb-mask="true"
+              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-black">
+                <img 
+                  src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=800" 
+                  alt="Branding architecture sketching design" 
+                  className="w-full h-full object-cover filter brightness-[0.35] contrast-[1.1] grayscale"
+                  referrerPolicy="no-referrer"
                 />
                 
-                {/* Illuminated Vector systems: typography system, logo constructions, identity frameworks */}
-                <div className="absolute inset-0 px-6 py-4 flex flex-col justify-between z-0">
-                  {/* Fine construction drafting lines */}
-                  <div className="absolute inset-0 bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-40" />
-                  
-                  <div className="flex justify-between items-start">
-                    {/* Typography block */}
-                    <div className="font-serif text-[10px] text-zinc-500 space-y-1 bg-black/40 p-2 rounded border border-white/5 backdrop-blur-sm">
-                      <span className="text-[#a78bfa] block font-semibold">TYPOGRAPHY SYSTEM</span>
-                      <p className="font-serif text-sm tracking-wide text-zinc-300">GBA Display Serif</p>
-                      <p className="font-mono text-[8px] text-zinc-400">Scale: 1.618 Golden Ratio</p>
-                    </div>
-                    {/* Brand guidelines label */}
-                    <div className="font-mono text-[8px] text-zinc-500 uppercase tracking-widest text-right">
-                      IDF-X // WIREFRAME
-                    </div>
-                  </div>
-
-                  {/* Central Construction circle aligned around the spotlight orb target */}
-                  <div className="relative w-36 h-36 mx-auto flex items-center justify-center">
-                    <div className="absolute inset-0 border border-white/[0.04] rounded-full" />
-                    <div className="absolute inset-4 border border-[#a78bfa]/15 rounded-full animate-ping" style={{ animationDuration: '4s' }} />
-                    <div className="absolute inset-8 border border-dashed border-white/10 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
-                    <div className="absolute inset-14 border border-[#a78bfa]/10 rounded-full" />
-                    
-                    {/* Fine measuring blueprint lines */}
-                    <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-white/[0.06]" />
-                    <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-white/[0.06]" />
-                    
-                    <div className="z-10 font-serif text-2xl text-white font-medium bg-black/60 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
+                {/* Overlay Drafting Graphic */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
+                  <div className="relative w-44 h-44 flex items-center justify-center">
+                    <div className="absolute inset-4 border border-[#7C3AED]/25 rounded-full animate-pulse" />
+                    <div className="absolute inset-10 border border-dashed border-white/10 rounded-full animate-spin" style={{ animationDuration: '24s' }} />
+                    <div className="w-16 h-16 bg-[#7C3AED]/10 border border-[#7C3AED]/35 rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold">
                       G
                     </div>
-                  </div>
-
-                  <div className="flex justify-between items-end text-[8px] font-mono text-zinc-500">
-                    <span>GRID 12-COL-FLUID</span>
-                    <span>ALIGN: PERFECT CENTER</span>
+                    {/* Drafting overlay lines */}
+                    <div className="absolute left-0 right-0 h-[1px] bg-white/5" />
+                    <div className="absolute top-0 bottom-0 w-[1px] bg-white/5" />
                   </div>
                 </div>
               </div>
@@ -216,63 +231,29 @@ export default function Scene5StickyStorytelling() {
               </div>
 
               {/* Graphic Experience */}
-              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-zinc-950 flex items-center justify-center">
-                {/* Unified Cinematic Spotlight Orb Target */}
-                <div 
-                  className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-                  data-orb-scale="1.15"
-                  data-orb-opacity="0.58"
-                  data-orb-glow="rgba(192, 132, 252, 0.28)"
-                  data-orb-theme="normal"
-                  data-orb-mask="true"
+              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-black">
+                <img 
+                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800" 
+                  alt="High speed marketing attention campaign nodes" 
+                  className="w-full h-full object-cover filter brightness-[0.35] grayscale"
+                  referrerPolicy="no-referrer"
                 />
-
-                {/* Highly structured Audience Flow Vector diagram, revealing pathways */}
-                <div className="absolute inset-0 px-6 py-5 flex flex-col justify-between z-0">
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest">ATTENTION TRANSMISSION FLOW</span>
-                    <span className="font-mono text-[8px] px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-300 rounded-full">ACTIVE LINK</span>
-                  </div>
-
-                  {/* Flow network diagram */}
-                  <div className="relative w-full h-28 flex items-center justify-between px-4">
-                    {/* Pulse lines connecting nodes */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                      <path d="M 40,56 C 100,20 180,20 220,56 C 260,92 340,92 380,56" fill="none" stroke="#a78bfa" strokeWidth="1.5" strokeDasharray="5, 5" className="opacity-40 animate-[dash_10s_linear_infinite]" />
-                      <path d="M 40,56 Q 210,110 380,56" fill="none" stroke="#c084fc" strokeWidth="1" strokeDasharray="3, 3" className="opacity-20" />
-                    </svg>
-
-                    {/* Nodes representing marketing pathways */}
-                    <div className="relative z-10 flex flex-col items-center bg-black/60 p-2 rounded border border-white/5 w-24">
-                      <span className="font-mono text-[7px] text-zinc-500 uppercase">Input Node</span>
-                      <span className="font-medium text-[10px] text-zinc-200">Creator Alg</span>
+                
+                {/* Dynamic upward chart indicators */}
+                <div className="absolute inset-x-6 bottom-4 h-24 flex items-end justify-between space-x-3 bg-black/45 backdrop-blur-md p-4 rounded-lg border border-white/5">
+                  {[20, 38, 54, 48, 72, 88, 110].map((v, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center space-y-1">
+                      <span className="font-mono text-[8px] text-purple-400 font-bold">+{v}%</span>
+                      <motion.div 
+                        initial={{ height: 0 }}
+                        whileInView={{ height: `${v * 0.4}px` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: i * 0.05 }}
+                        className="w-full bg-gradient-to-t from-purple-900 to-[#A855F7] rounded-sm"
+                      />
+                      <span className="font-mono text-[7px] text-zinc-500 font-bold">W{i+1}</span>
                     </div>
-
-                    <div className="relative z-10 flex flex-col items-center bg-purple-950/25 p-2 rounded border border-purple-500/20 w-28 shadow-lg">
-                      <span className="font-mono text-[7px] text-[#c084fc] uppercase animate-pulse">Spotlight Center</span>
-                      <span className="font-medium text-[10px] text-white">Campaign System</span>
-                    </div>
-
-                    <div className="relative z-10 flex flex-col items-center bg-black/60 p-2 rounded border border-white/5 w-24">
-                      <span className="font-mono text-[7px] text-zinc-500 uppercase">Growth Out</span>
-                      <span className="font-medium text-[10px] text-zinc-200">Scale Portal</span>
-                    </div>
-                  </div>
-
-                  {/* Analytical bottom indicators */}
-                  <div className="flex justify-between items-end border-t border-white/5 pt-2">
-                    <div className="flex space-x-4">
-                      <div>
-                        <span className="font-mono text-[7px] text-zinc-500 block font-bold">ATTENTION RANGE</span>
-                        <span className="font-mono text-[10.5px] text-purple-400 font-bold">14.2M FLOWS</span>
-                      </div>
-                      <div>
-                        <span className="font-mono text-[7px] text-zinc-500 block font-bold">PATH CAPABILITY</span>
-                        <span className="font-mono text-[10.5px] text-[#c084fc] font-bold">8.42% RATIO</span>
-                      </div>
-                    </div>
-                    <span className="font-mono text-[7px] text-zinc-500">VELOCITY RATIO: 1.84x</span>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -296,73 +277,32 @@ export default function Scene5StickyStorytelling() {
               </div>
 
               {/* Graphic Experience */}
-              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-zinc-950 flex items-center justify-center">
-                {/* Unified Cinematic Spotlight Orb Target */}
-                <div 
-                  className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-                  data-orb-scale="1.1"
-                  data-orb-opacity="0.52"
-                  data-orb-glow="rgba(216, 180, 254, 0.25)"
-                  data-orb-theme="normal"
-                  data-orb-mask="true"
+              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-black">
+                <img 
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" 
+                  alt="Elite operations meeting room office" 
+                  className="w-full h-full object-cover filter brightness-[0.3] grayscale"
+                  referrerPolicy="no-referrer"
                 />
 
-                {/* Living Ecosystem Talent Network & Organization Structure */}
-                <div className="absolute inset-0 px-6 py-5 flex flex-col justify-between z-0">
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest">ELITE OPERATOR ECOSYSTEM</span>
-                    <span className="font-mono text-[8px] text-[#d8b4fe]">ORGANIC NETWORK</span>
-                  </div>
-
-                  {/* Interconnected Living bubble nodes */}
-                  <div className="relative w-full h-28 flex items-center justify-center">
-                    {/* SVG connection lines for the ecosystem */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                      <line x1="25%" y1="50%" x2="50%" y2="25%" stroke="rgba(216, 180, 254, 0.2)" strokeWidth="1.2" />
-                      <line x1="50%" y1="25%" x2="75%" y2="50%" stroke="rgba(216, 180, 254, 0.2)" strokeWidth="1.2" />
-                      <line x1="25%" y1="50%" x2="50%" y2="75%" stroke="rgba(216, 180, 254, 0.2)" strokeWidth="1.2" />
-                      <line x1="50%" y1="75%" x2="75%" y2="50%" stroke="rgba(216, 180, 254, 0.2)" strokeWidth="1.2" />
-                      <line x1="50%" y1="25%" x2="50%" y2="75%" stroke="rgba(216, 180, 254, 0.15)" strokeWidth="1" strokeDasharray="3 3" />
-                    </svg>
-
-                    {/* Central Master Node */}
-                    <div className="absolute top-[12%] bg-black/80 border border-[#d8b4fe]/35 px-2.5 py-1 rounded-full flex items-center space-x-1.5 shadow-md">
-                      <span className="w-1.5 h-1.5 bg-[#d8b4fe] rounded-full animate-ping" />
-                      <span className="font-mono text-[8px] text-white">Chief Growth Co-pilot</span>
-                    </div>
-
-                    {/* Surrounding Node 1 */}
-                    <div className="absolute left-[8%] top-[40%] bg-black/60 border border-white/5 py-1 px-2 rounded">
-                      <span className="font-mono text-[8px] text-zinc-300">UX Architect</span>
-                    </div>
-
-                    {/* Surrounding Node 2 */}
-                    <div className="absolute right-[8%] top-[40%] bg-black/60 border border-white/5 py-1 px-2 rounded">
-                      <span className="font-mono text-[8px] text-zinc-300">Campaign Lead</span>
-                    </div>
-
-                    {/* Surrounding Node 3 */}
-                    <div className="absolute bottom-[10%] bg-purple-950/20 border border-[#d8b4fe]/20 py-1 px-3 rounded shadow-lg">
-                      <span className="font-mono text-[8px] text-[#e9d5ff]">Integrator Veteran</span>
-                    </div>
-                  </div>
-
-                  {/* Overlaid Operator Avatar circles */}
-                  <div className="flex justify-between items-center border-t border-white/5 pt-2">
-                    <span className="font-mono text-[7px] text-zinc-500 font-bold">OPERATOR PLACEMENT RATE: 100%</span>
-                    <div className="flex space-x-[-8px]">
-                      {[
-                        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=120&h=120',
-                        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=120&h=120',
-                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120&h=120',
-                      ].map((imgUrl, i) => (
-                        <div key={i} className="w-6 h-6 rounded-full border border-black overflow-hidden shadow">
-                          <img src={imgUrl} alt="Vetted operators" className="w-full h-full object-cover filter grayscale" referrerPolicy="no-referrer" />
-                        </div>
-                      ))}
-                      <div className="w-6 h-6 rounded-full bg-[#7C3AED] text-[7px] text-white flex items-center justify-center font-mono font-bold shadow-sm">
-                        +12
-                      </div>
+                {/* Overlaid Operator Avatar circles */}
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                  <div className="flex space-x-[-12px] bg-black/60 backdrop-blur-md px-6 py-4 rounded-full border border-white/10">
+                    {[
+                      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=120&h=120',
+                      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=120&h=120',
+                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120&h=120',
+                    ].map((imgUrl, i) => (
+                      <motion.div
+                        key={i}
+                        whileHover={{ y: -6, scale: 1.05 }}
+                        className="w-12 h-12 rounded-full border border-zinc-900 overflow-hidden shadow-2xl relative cursor-pointer"
+                      >
+                        <img src={imgUrl} alt="Vetted operators" className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all" referrerPolicy="no-referrer" />
+                      </motion.div>
+                    ))}
+                    <div className="w-12 h-12 rounded-full border border-zinc-900 bg-[#7C3AED] text-white flex items-center justify-center font-mono text-[10px] font-bold shadow-2xl">
+                      +100
                     </div>
                   </div>
                 </div>
@@ -388,50 +328,33 @@ export default function Scene5StickyStorytelling() {
               </div>
 
               {/* Graphic Experience */}
-              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-zinc-950 flex items-center justify-center">
-                {/* Unified Cinematic Spotlight Orb Target */}
-                <div 
-                  className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-                  data-orb-scale="1.25"
-                  data-orb-opacity="0.65"
-                  data-orb-glow="rgba(233, 110, 230, 0.28)"
-                  data-orb-theme="normal"
-                  data-orb-mask="true"
+              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-black">
+                <img 
+                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800"
+                  alt="High contrast growth dashboard presentation workspace" 
+                  className="w-full h-full object-cover filter brightness-[0.3] grayscale"
+                  referrerPolicy="no-referrer"
                 />
 
-                {/* Growth Loops connected to the orb, as if energizing each other */}
-                <div className="absolute inset-0 px-6 py-5 flex flex-col justify-between z-0">
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest font-bold">REVENUE ENGAGEMENT LOOP</span>
-                    <span className="font-mono text-[8px] text-pink-400 font-bold animate-pulse">&bull; HARMONIZED STATUS</span>
-                  </div>
-
-                  {/* Centered target visual that wraps around the orb's coordinates to synthesize loop */}
-                  <div className="relative w-full h-28 flex items-center justify-center">
-                    <div className="absolute inset-x-8 h-20 border border-white/5 border-dashed rounded-full animate-spin" style={{ animationDuration: '30s' }} />
-                    <div className="absolute inset-x-14 h-12 border border-[#7C3AED]/25 rounded-full animate-ping" style={{ animationDuration: '6s' }} />
-                    
-                    {/* Visual labels around the centralized reactor */}
-                    <div className="absolute left-1 top-[15%] bg-black/60 p-1 rounded border border-white/5 text-[7px] font-mono whitespace-nowrap">
-                      &rarr; Lead Generation Capture
+                {/* Overlaid elegant funnel chart representation */}
+                <div className="absolute inset-0 flex items-center justify-center p-6">
+                  <div className="w-full max-w-sm space-y-2 bg-black/50 backdrop-blur-md p-4 rounded-lg border border-white/5">
+                    <div className="h-6 bg-purple-950/10 border border-purple-500/10 rounded-sm flex items-center justify-between px-3 text-[9px] font-mono font-bold text-purple-300">
+                      <span>AUDIENCE SOURCED</span>
+                      <span>100%</span>
                     </div>
-                    
-                    <div className="absolute right-1 bottom-[15%] bg-black/60 p-1 rounded border border-white/5 text-[7px] font-mono whitespace-nowrap">
-                      &larr; Conversion pathways
+                    <div className="w-[85%] mx-auto h-6 bg-purple-950/20 border border-purple-500/15 rounded-sm flex items-center justify-between px-3 text-[9px] font-mono font-bold text-purple-350">
+                      <span>ENGAGED REACH</span>
+                      <span>68%</span>
                     </div>
-
-                    {/* Central ring indicator linking the loop with the orb spotlight */}
-                    <div className="w-16 h-16 border-2 border-purple-500/25 rounded-full flex items-center justify-center animate-pulse">
-                      <div className="w-10 h-10 border border-pink-500/30 rounded-full flex items-center justify-center text-[8px] font-mono text-zinc-300">
-                        REACTOR
-                      </div>
+                    <div className="w-[65%] mx-auto h-6 bg-purple-900/30 border border-purple-500/25 rounded-sm flex items-center justify-between px-3 text-[9px] font-mono font-bold text-purple-200">
+                      <span>VERIFIED TARGETS</span>
+                      <span>36%</span>
                     </div>
-                  </div>
-
-                  {/* Bottom Pipeline display */}
-                  <div className="flex justify-between items-end text-[8px] font-mono text-zinc-500">
-                    <span>CONVERSION FLOW VALUE: ENERGIZED</span>
-                    <span>ACTIVE GENERATOR: INSTALLED</span>
+                    <div className="w-[45%] mx-auto h-6 bg-[#7C3AED] rounded-sm flex items-center justify-between px-3 text-[9px] font-mono font-bold text-white shadow-lg">
+                      <span>REVENUE SYSTEM</span>
+                      <span>8.8%</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -456,54 +379,20 @@ export default function Scene5StickyStorytelling() {
               </div>
 
               {/* Graphic Experience */}
-              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-zinc-950 flex items-center justify-center">
-                {/* Unified Cinematic Spotlight Orb Target - LARGER, MORE CONFIDENT, GREATER MASS */}
-                <div 
-                  className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-                  data-orb-scale="1.45"
-                  data-orb-opacity="0.75"
-                  data-orb-glow="rgba(147, 51, 234, 0.40)"
-                  data-orb-theme="large"
-                  data-orb-mask="true"
+              <div className="mt-8 relative overflow-hidden rounded-xl h-64 border border-white/5 bg-black">
+                <img 
+                  src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800" 
+                  alt="Macro blueprint consulting desk work space" 
+                  className="w-full h-full object-cover filter brightness-[0.3] grayscale"
+                  referrerPolicy="no-referrer"
                 />
 
-                {/* Macro Consulting Business Architecture scaling frameworks */}
-                <div className="absolute inset-0 px-6 py-5 flex flex-col justify-between z-0">
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono text-[9px] text-[#c084fc] uppercase tracking-widest font-extrabold">STAGE III &bull; MACRO ARCHITECTURE MAP</span>
-                    <span className="font-mono text-[8px] text-zinc-500 font-bold">SCALE STATUS: MAX VENTURE</span>
-                  </div>
-
-                  {/* Complex structural grids representing expanding frameworks */}
-                  <div className="relative w-full h-28 flex items-center justify-between px-2">
-                    <div className="w-24 h-16 border border-white/10 rounded flex flex-col justify-between p-2 bg-black/50">
-                      <span className="font-mono text-[7px] text-zinc-500">AUDIT MODEL</span>
-                      <span className="font-sans text-[8px] text-zinc-300 font-light">&bull; Leakages diagnosed</span>
-                    </div>
-
-                    <div className="w-4 flex items-center justify-center font-bold text-[#c084fc] font-mono text-xs animate-bounce">
-                      &rarr;
-                    </div>
-
-                    <div className="w-28 h-20 border border-purple-500/20 rounded flex flex-col justify-between p-2 bg-purple-950/15 shadow-xl">
-                      <span className="font-mono text-[7px] text-[#c084fc]">STABILIZATION FRAMEWORK</span>
-                      <span className="font-sans text-[8.5px] text-white font-medium">&bull; Interconnected growth systems alignment</span>
-                    </div>
-
-                    <div className="w-4 flex items-center justify-center font-bold text-[#c084fc] font-mono text-xs animate-bounce">
-                      &rarr;
-                    </div>
-
-                    <div className="w-24 h-16 border border-white/10 rounded flex flex-col justify-between p-2 bg-black/50">
-                      <span className="font-mono text-[7px] text-zinc-500">EXPAND ENGINE</span>
-                      <span className="font-sans text-[8px] text-zinc-300 font-light">&bull; Macro scaling active</span>
-                    </div>
-                  </div>
-
-                  {/* Operational indicators */}
-                  <div className="flex justify-between items-end border-t border-white/5 pt-2">
-                    <span className="font-mono text-[7px] text-zinc-500 font-bold">PREDICTABLE MARGIN BLUEPRINT ACTIVE</span>
-                    <span className="font-mono text-[7px] text-[#c084fc] font-bold">10x ENTERPRISE STABILITY INDEX</span>
+                {/* Overlaid strategic stage connectors */}
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                  <div className="flex items-center space-x-4 bg-black/60 backdrop-blur-md px-6 py-4 rounded-lg border border-white/10 select-none">
+                    <div className="px-3 py-1 bg-white/5 border border-white/10 rounded font-mono text-[8px] text-zinc-300 font-bold">STAGE I: AUDIT</div>
+                    <span className="text-purple-500 font-bold text-sm">&rarr;</span>
+                    <div className="px-3 py-1 bg-[#7C3AED]/15 border border-[#7C3AED]/40 rounded font-mono text-[8px] text-purple-300 font-bold">STAGE II: POSITION</div>
                   </div>
                 </div>
               </div>

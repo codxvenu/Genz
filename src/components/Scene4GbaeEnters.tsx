@@ -7,18 +7,43 @@ export default function Scene4GbaeEnters() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let cachedTop = 0;
+    let cachedHeight = 0;
+
+    const measure = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const elementHeight = rect.height;
-      const scrollOffset = -rect.top;
-      const calcProgress = Math.min(Math.max(scrollOffset / (elementHeight - window.innerHeight), 0), 1);
-      setProgress(calcProgress);
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      cachedTop = rect.top + scrollTop;
+      cachedHeight = rect.height;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    measure();
+    window.addEventListener('resize', measure);
+    const measureInterval = setInterval(measure, 1500);
+
+    let ticked = false;
+    const handleScroll = () => {
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollOffset = scrollY - cachedTop;
+          const calcProgress = Math.min(Math.max(scrollOffset / (cachedHeight - window.innerHeight), 0), 1);
+          setProgress(calcProgress);
+          ticked = false;
+        });
+        ticked = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      clearInterval(measureInterval);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   // GBA Organized structures
@@ -39,9 +64,9 @@ export default function Scene4GbaeEnters() {
     <div
       ref={containerRef}
       id="scene-gba-enters"
-      className="relative h-[220vh] bg-black select-none"
+      className="relative h-[220vh] bg-transparent select-none"
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4">
         
         {/* Subtle royal geometric orbit guidelines in black & dark purple */}
         <div className="absolute inset-0 pointer-events-none opacity-20 select-none z-0">
@@ -50,17 +75,14 @@ export default function Scene4GbaeEnters() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-purple-500/10" />
         </div>
 
-        {/* Unified Cinematic Spotlight Orb Target - Central nucleus organizing files */}
+        {/* Ambient violet central glow overlay */}
         <div 
-          className="orb-target absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden transition-all duration-1000"
-          data-orb-scale={logoVisible ? "1.1" : "0.5"}
-          data-orb-opacity={logoVisible ? "0.45" : "0"}
-          data-orb-glow="rgba(124, 58, 237, 0.28)"
-          data-orb-theme="normal"
-          data-orb-mask="false"
-        >
-          <div className="w-[440px] aspect-square" />
-        </div>
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#7C3AED]/10 blur-[130px] transition-all duration-1000 z-0"
+          style={{
+            transform: `translate(-50%, -50%) scale(${logoVisible ? 1.2 : 0.5})`,
+            opacity: logoVisible ? 0.9 : 0
+          }}
+        />
 
         {/* Top Status Token */}
         <div className="absolute top-16 left-1/2 -translate-x-1/2 text-center z-20">
@@ -110,7 +132,7 @@ export default function Scene4GbaeEnters() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 90 }}
-                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black border border-purple-500/35 text-white flex flex-col justify-center items-center shadow-[0_0_50px_rgba(124,58,237,0.15)] relative z-10 select-none"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black/40 backdrop-blur-md border border-purple-500/50 text-white flex flex-col justify-center items-center shadow-[0_0_50px_rgba(124,58,237,0.25)] relative z-10 select-none animate-pulse-soft"
               >
                 {/* Rotating accent rings */}
                 <div className="absolute inset-2 border border-purple-500/10 rounded-full animate-spin" style={{ animationDuration: '10s' }} />

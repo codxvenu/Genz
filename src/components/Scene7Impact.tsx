@@ -29,20 +29,45 @@ export default function Scene7Impact() {
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
+    let cachedTop = 0;
+    let cachedHeight = 0;
+
+    const measure = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const elementHeight = rect.height;
-      const scrollOffset = -rect.top;
-      
-      const fraction = Math.min(Math.max(scrollOffset / (elementHeight - window.innerHeight), 0), 1);
-      const currentIdx = Math.min(Math.floor(fraction * (slides.length + 0.15)), slides.length - 1);
-      setActiveSlide(currentIdx);
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      cachedTop = rect.top + scrollTop;
+      cachedHeight = rect.height;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    measure();
+    window.addEventListener('resize', measure);
+    const measureInterval = setInterval(measure, 1500);
+
+    let ticked = false;
+    const handleScroll = () => {
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollOffset = scrollY - cachedTop;
+          
+          const fraction = Math.min(Math.max(scrollOffset / (cachedHeight - window.innerHeight), 0), 1);
+          const currentIdx = Math.min(Math.floor(fraction * (slides.length + 0.15)), slides.length - 1);
+          setActiveSlide(currentIdx);
+          ticked = false;
+        });
+        ticked = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      clearInterval(measureInterval);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const activeItem = slides[activeSlide] || slides[0];
