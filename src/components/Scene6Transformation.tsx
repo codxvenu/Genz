@@ -117,22 +117,40 @@ export default function Scene6Transformation() {
 
             {/* GBA organized system visualizer */}
             <div className="mt-12 bg-black border border-white/5 rounded-xl p-6 h-56 flex items-center justify-center relative overflow-hidden">
-              <div className="relative w-40 h-40 flex items-center justify-center">
-                <div className="absolute inset-0 border border-purple-500/10 rounded-full" />
+              <div className="relative w-full max-w-[220px] aspect-square flex items-center justify-center">
+                
+                {/* Embedded stabilized high-resolution video orb - larger and brighter, locked to represent structured momentum */}
+                <div className="absolute inset-0 z-0 flex items-center justify-center select-none pointer-events-none">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-contain mix-blend-screen opacity-90 filter brightness-[130%] contrast-[115%]"
+                    referrerPolicy="no-referrer"
+                  >
+                    <source src="/revolving_orb.mp4" type="video/mp4" />
+                    <source src="/assets/revolving_orb.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-4 bg-purple-950/20 mix-blend-color-dodge rounded-full blur-[35px] pointer-events-none animate-pulse" />
+                </div>
+
+                {/* Highly structured geometric overlays representing organization */}
+                <div className="absolute inset-0 border border-purple-500/20 rounded-full z-10" />
                 <motion.div 
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-                  className="absolute inset-4 border border-dashed border-purple-500/20 rounded-full"
+                  transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+                  className="absolute inset-4 border border-dashed border-purple-500/30 rounded-full z-10"
                 />
                 
                 {/* Clockwork connecting active nodes */}
-                <div className="absolute top-0 w-3.5 h-3.5 rounded-full bg-[#7C3AED] shadow-2xl flex items-center justify-center">
+                <div className="absolute top-0 w-3.5 h-3.5 rounded-full bg-[#7C3AED] shadow-[0_0_15px_#7C3AED] flex items-center justify-center z-20">
                   <div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 </div>
-                <div className="absolute bottom-4 left-2 w-2.5 h-2.5 rounded-full bg-[#7C3AED]" />
-                <div className="absolute bottom-4 right-2 w-3 h-3 rounded-full bg-[#A855F7]" />
+                <div className="absolute bottom-4 left-2 w-2.5 h-2.5 rounded-full bg-[#7C3AED] shadow-[0_0_10px_#7C3AED] z-20" />
+                <div className="absolute bottom-4 right-2 w-3 h-3 rounded-full bg-[#A855F7] shadow-[0_0_12px_#A855F7] z-20" />
 
-                <div className="w-14 h-14 bg-black border border-purple-500/30 rounded-full flex items-center justify-center text-white font-serif text-xs font-normal shadow-[0_0_20px_rgba(124,58,237,0.15)] relative">
+                <div className="w-14 h-14 bg-black/60 backdrop-blur-md border border-purple-500/60 rounded-full flex items-center justify-center text-white font-serif text-xs font-normal shadow-[0_0_25px_rgba(124,58,237,0.3)] relative z-20">
                   GBA
                 </div>
               </div>

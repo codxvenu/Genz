@@ -29,31 +29,11 @@ export default function Scene1Hero({ onOpenBooking, onStartJourney }: HeroProps)
     <section
       id="scene-hero"
       ref={containerRef}
-      className="relative min-h-screen flex flex-col justify-center items-center bg-black overflow-hidden px-4 sm:px-6 lg:px-8 select-none"
+      className="relative min-h-screen flex flex-col justify-center items-center bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 select-none"
     >
-      {/* Background Cinematic image + purple gradient overlay */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <motion.div
-          animate={{
-            x: mousePos.x,
-            y: mousePos.y,
-            scale: 1.05
-          }}
-          transition={{ type: 'spring', damping: 30, stiffness: 80 }}
-          className="absolute inset-0 w-full h-full"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1800"
-            alt="Luxury Cinematic Space"
-            className="w-full h-full object-cover filter brightness-[0.25] contrast-[1.15]"
-            referrerPolicy="no-referrer"
-          />
-        </motion.div>
-        
-        {/* Aggressive radial and atmospheric gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/90 to-black z-10" />
-        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-900/15 rounded-full blur-[140px] mix-blend-screen pointer-events-none z-10 animate-pulse-soft" />
-      </div>
+      {/* Ambient linear and radial gradients for initial cosmic depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70 z-0 pointer-events-none" />
+      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-950/5 rounded-full blur-[140px] mix-blend-screen pointer-events-none z-0" />
 
       {/* Hero Content Area */}
       <div className="relative z-20 text-center max-w-5xl mx-auto flex flex-col items-center justify-center space-y-10 px-4">

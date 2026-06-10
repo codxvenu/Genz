@@ -40,10 +40,10 @@ export default function Scene2ScrollStoryIntro() {
     <div
       ref={containerRef}
       id="scene-scroll-story"
-      className="relative h-[300vh] bg-black select-none pointer-events-none"
+      className="relative h-[300vh] bg-transparent select-none pointer-events-none"
     >
       {/* Sticky content frame */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4 sm:px-8">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4 sm:px-8">
         
         {/* Subtle royal purple atmospheric glow behind the words */}
         <div className="absolute w-[500px] h-[500px] rounded-full bg-[#7C3AED]/5 blur-[150px] mix-blend-screen pointer-events-none" />

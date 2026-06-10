@@ -37,19 +37,19 @@ export default function Scene3BusinessJourney() {
     <div
       ref={containerRef}
       id="scene-business-journey"
-      className="relative h-[250vh] bg-black select-none"
+      className="relative h-[250vh] bg-transparent select-none"
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4">
         
         {/* Deep background ambient glowing spots that turn red on crisis */}
         <div 
           className="absolute inset-0 pointer-events-none transition-all duration-1000 ease-out z-0"
           style={{
             background: isOverwhelmed 
-              ? 'radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.12) 0%, rgba(0, 0, 0, 1) 75%)'
+              ? 'radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.12) 0%, rgba(0, 0, 0, 0) 75%)'
               : isChaotic
-              ? 'radial-gradient(circle at 50% 50%, rgba(200, 100, 50, 0.08) 0%, rgba(0, 0, 0, 1) 80%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.06) 0%, rgba(0, 0, 0, 1) 85%)'
+              ? 'radial-gradient(circle at 50% 50%, rgba(200, 100, 50, 0.08) 0%, rgba(0, 0, 0, 0) 80%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.06) 0%, rgba(0, 0, 0, 0) 85%)'
           }}
         />
 

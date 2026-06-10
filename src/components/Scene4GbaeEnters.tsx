@@ -39,9 +39,9 @@ export default function Scene4GbaeEnters() {
     <div
       ref={containerRef}
       id="scene-gba-enters"
-      className="relative h-[220vh] bg-black select-none"
+      className="relative h-[220vh] bg-transparent select-none"
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4">
         
         {/* Subtle royal geometric orbit guidelines in black & dark purple */}
         <div className="absolute inset-0 pointer-events-none opacity-20 select-none z-0">
@@ -107,7 +107,7 @@ export default function Scene4GbaeEnters() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 90 }}
-                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black border border-purple-500/35 text-white flex flex-col justify-center items-center shadow-[0_0_50px_rgba(124,58,237,0.15)] relative z-10 select-none"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black/40 backdrop-blur-md border border-purple-500/50 text-white flex flex-col justify-center items-center shadow-[0_0_50px_rgba(124,58,237,0.25)] relative z-10 select-none animate-pulse-soft"
               >
                 {/* Rotating accent rings */}
                 <div className="absolute inset-2 border border-purple-500/10 rounded-full animate-spin" style={{ animationDuration: '10s' }} />
