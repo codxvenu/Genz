@@ -29,11 +29,26 @@ export default function Scene1Hero({ onOpenBooking, onStartJourney }: HeroProps)
     <section
       id="scene-hero"
       ref={containerRef}
-      className="relative min-h-screen flex flex-col justify-center items-center bg-transparent overflow-hidden px-4 sm:px-6 lg:px-8 select-none"
+      className="relative min-h-screen flex flex-col justify-center items-center bg-black overflow-hidden px-4 sm:px-6 lg:px-8 select-none"
     >
-      {/* Ambient linear and radial gradients for initial cosmic depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70 z-0 pointer-events-none" />
-      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-950/5 rounded-full blur-[140px] mix-blend-screen pointer-events-none z-0" />
+      {/* Background Pure Black Empty Space & Video */}
+      <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+        {/* Soft atmospheric radial projection and linear gradients for cosmic depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/85 to-black z-10 pointer-events-none" />
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-950/10 rounded-full blur-[140px] mix-blend-screen pointer-events-none z-10" />
+
+        {/* Unified Cinematic Spotlight Orb Target */}
+        <div 
+          className="orb-target absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+          data-orb-scale="1.0"
+          data-orb-opacity="0.38"
+          data-orb-glow="rgba(124, 58, 237, 0.22)"
+          data-orb-theme="normal"
+          data-orb-mask="false"
+        >
+          <div className="w-[450px] aspect-square flex items-center justify-center" />
+        </div>
+      </div>
 
       {/* Hero Content Area */}
       <div className="relative z-20 text-center max-w-5xl mx-auto flex flex-col items-center justify-center space-y-10 px-4">

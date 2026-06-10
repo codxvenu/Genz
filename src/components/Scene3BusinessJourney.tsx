@@ -37,21 +37,27 @@ export default function Scene3BusinessJourney() {
     <div
       ref={containerRef}
       id="scene-business-journey"
-      className="relative h-[250vh] bg-transparent select-none"
+      className="relative h-[250vh] bg-black select-none"
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent px-4">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
         
-        {/* Deep background ambient glowing spots that turn red on crisis */}
+        {/* Dynamic unified orb target that reacts to business crisis (red on overwhelm, amber on chaos, purple on normal) */}
         <div 
-          className="absolute inset-0 pointer-events-none transition-all duration-1000 ease-out z-0"
-          style={{
-            background: isOverwhelmed 
-              ? 'radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.12) 0%, rgba(0, 0, 0, 0) 75%)'
-              : isChaotic
-              ? 'radial-gradient(circle at 50% 50%, rgba(200, 100, 50, 0.08) 0%, rgba(0, 0, 0, 0) 80%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.06) 0%, rgba(0, 0, 0, 0) 85%)'
-          }}
-        />
+          className="orb-target absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+          data-orb-scale={isOverwhelmed ? "0.75" : isChaotic ? "0.85" : "0.95"}
+          data-orb-opacity={isOverwhelmed ? "0.22" : isChaotic ? "0.28" : "0.32"}
+          data-orb-glow={
+            isOverwhelmed 
+              ? "rgba(239, 68, 68, 0.22)" 
+              : isChaotic 
+              ? "rgba(245, 158, 11, 0.18)" 
+              : "rgba(124, 58, 237, 0.2)"
+          }
+          data-orb-theme="normal"
+          data-orb-mask="false"
+        >
+          <div className="w-[380px] aspect-square" />
+        </div>
 
         {/* Minimal Subtle Grid Texture */}
         <div className="absolute inset-0 opacity-[0.1] bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />

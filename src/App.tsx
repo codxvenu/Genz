@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Navbar from './components/Navbar';
-import FloatingNarrativeOrb from './components/FloatingNarrativeOrb';
+import GlobalCinematicOrb from './components/GlobalCinematicOrb';
 import Scene1Hero from './components/Scene1Hero';
 import Scene2ScrollStoryIntro from './components/Scene2ScrollStoryIntro';
 import Scene3BusinessJourney from './components/Scene3BusinessJourney';
@@ -44,14 +44,14 @@ export default function App() {
       className="min-h-screen bg-black text-white font-sans antialiased selection:bg-[#7C3AED] selection:text-white relative"
     >
       
-      {/* Global Cinematic Floating Narrative Orb representing Growth, Journey and Scale */}
-      <FloatingNarrativeOrb />
-
       {/* Absolute ambient lights background */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-[5%] left-[-15%] w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[140px]" />
         <div className="absolute bottom-[10%] right-[-15%] w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[140px]" />
       </div>
+
+      {/* Unified floating spotlight guide */}
+      <GlobalCinematicOrb />
 
       <div className="relative z-10 flex flex-col">
         {/* Navigation Bar */}
