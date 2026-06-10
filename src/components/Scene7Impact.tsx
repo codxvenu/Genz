@@ -51,7 +51,7 @@ export default function Scene7Impact() {
     <div
       ref={containerRef}
       id="scene-impact"
-      className="relative h-[320vh] bg-black select-none overflow-hidden"
+      className="relative h-[320vh] bg-black select-none"
     >
       {/* Sticky viewport frame */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center bg-black overflow-hidden">

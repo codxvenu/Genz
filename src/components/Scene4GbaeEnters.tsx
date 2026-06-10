@@ -39,7 +39,7 @@ export default function Scene4GbaeEnters() {
     <div
       ref={containerRef}
       id="scene-gba-enters"
-      className="relative h-[220vh] bg-black select-none overflow-hidden"
+      className="relative h-[220vh] bg-black select-none"
     >
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
         

@@ -37,7 +37,7 @@ export default function Scene3BusinessJourney() {
     <div
       ref={containerRef}
       id="scene-business-journey"
-      className="relative h-[250vh] bg-black select-none overflow-hidden"
+      className="relative h-[250vh] bg-black select-none"
     >
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black px-4">
         
